@@ -1,5 +1,10 @@
 .gradle
 build/
+run/
+bin/
+eclipse/
+dist/
+
 
 # Ignore Gradle GUI config
 gradle-app.setting
@@ -9,3 +14,9 @@ gradle-app.setting
 
 # Cache of project
 .gradletasknamecache
+
+.classpath
+.project
+*.launch
+.settings/
+*.bak
