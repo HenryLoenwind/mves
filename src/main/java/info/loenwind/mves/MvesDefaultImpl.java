@@ -6,7 +6,7 @@ public final class MvesDefaultImpl implements IEnergyAcceptor, IEnergySupplier, 
   }
 
   @Override
-  public IEnergyStack supplyEnergy() {
+  public IEnergyStack get() {
     return null;
   }
 

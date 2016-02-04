@@ -1,12 +1,14 @@
 package info.loenwind.mves;
 
+import com.google.common.base.Supplier;
+
 /**
  * Energy supplier is the capability of a block’s side or an item to provide
  * energy on request. It is a passive capability that will only be triggered by
  * Energy Transporters.
  *
  */
-public interface IEnergySupplier extends IMvesCapability {
+public interface IEnergySupplier extends IMvesCapability, Supplier<IEnergyStack> {
 
   /**
    * Get an representation of this suppliers available energy.
@@ -22,5 +24,5 @@ public interface IEnergySupplier extends IMvesCapability {
    * 
    * @return An Energy Stack that can be used to retrieve energy. May be null.
    */
-  IEnergyStack supplyEnergy();
+  IEnergyStack get();
 }
