@@ -10,7 +10,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
-public class SimpleEnergyPusher extends SimpleEnergyTransporter {
+public class SimpleEnergyPusher extends SimpleEnergyTransporterBase {
 
   protected final SimpleEnergyBuffer buffer;
   protected final boolean isBattery;

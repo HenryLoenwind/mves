@@ -11,14 +11,16 @@ import net.minecraft.world.World;
 
 public class SimpleEnergyTransporterRelay extends SimpleEnergyTransporter implements IEnergyTransporterRelay {
 
-  private final World world;
-  private final BlockPos blockPos;
-  private final EnumSet<EnumFacing> directions;
+  public SimpleEnergyTransporterRelay(World world, BlockPos blockPos) {
+    super(world, blockPos, EnumSet.allOf(EnumFacing.class));
+  }
 
   public SimpleEnergyTransporterRelay(World world, BlockPos blockPos, EnumSet<EnumFacing> directions) {
-    this.world = world;
-    this.blockPos = blockPos;
-    this.directions = directions;
+    super(world, blockPos, directions, directions);
+  }
+
+  public SimpleEnergyTransporterRelay(World world, BlockPos blockPos, EnumSet<EnumFacing> directionsIn, EnumSet<EnumFacing> directionsOut) {
+    super(world, blockPos, directionsIn, directionsOut);
   }
 
   @Override
@@ -27,7 +29,7 @@ public class SimpleEnergyTransporterRelay extends SimpleEnergyTransporter implem
       return 0;
     }
     offer.see(this);
-    return push(world, blockPos, directions, offer);
+    return push(world, blockPos, directionsOut, offer);
   }
 
 }
