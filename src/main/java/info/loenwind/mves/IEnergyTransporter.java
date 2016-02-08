@@ -16,14 +16,8 @@ package info.loenwind.mves;
  * stations.
  * 
  * <p>
- * This capability has no methods; it is a marker interface. However, it is
- * explicitly legal for this capability to also implement the energy acceptor
- * interface. It is not legal to expose an energy acceptor capability and an
- * energy transporter capability with energy acceptor interface at the same time
- * if both connect to the same target. (This would lead to a double action from
- * steps 3 and 4 below.) It is also not legal to relay an energy offer that was
- * received as part of the energy acceptor capability (i.e. in step 3) to an
- * energy transporter. (This would disable the loop prevention logic.)
+ * This capability has no methods; it is a pure marker interface. See
+ * IEnergyTransporterRelay.
  * 
  * <h3>Transporting Energy</h3>
  * <p>
@@ -41,7 +35,7 @@ package info.loenwind.mves;
  * <p>
  * Step 4: The energy transporter adds an identification object to the "seen"
  * list of the energy offer, then it is offered to all connected energy
- * transporters that implement the energy acceptor interface.
+ * transporter relays.
  * 
  * <p>
  * Both step 3 and 4 may be aborted early if the available energy is exhausted.
@@ -63,8 +57,8 @@ package info.loenwind.mves;
  * 
  * <p>
  * Any energy transporter may opt out of being able to link up with other mod's
- * energy networks by: (a) not implementing IEnergyAcceptor interface and (b)
- * not executing step 4 and (c) explaining the user why "it does not work".
+ * energy networks by: (a) not implementing IEnergyAcceptor(Relay) interface and
+ * (b) not executing step 4 and (c) explaining the user why "it does not work".
  */
 public interface IEnergyTransporter extends IMvesCapability {
 
