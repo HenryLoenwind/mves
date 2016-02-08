@@ -16,12 +16,12 @@ public class FurnaceCapabilityProvider implements ICapabilityProvider {
 
   @Override
   public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-    return facing != null && (capability == MvesMod.CAP_EnergySupplier || capability == MvesMod.CAP_EnergyAcceptor);
+    return facing != null && (capability == MvesMod.CAP_EnergySupplier || capability == MvesMod.CAP_EnergyAcceptor) && !furnace.getWorld().isRemote;
   }
 
   @Override
   public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-    if (facing != null) {
+    if (facing != null && !furnace.getWorld().isRemote) {
       if (capability == MvesMod.CAP_EnergySupplier) {
         return (T) new FurnaceEnergySupplier(furnace);
       } else if (capability == MvesMod.CAP_EnergyAcceptor) {

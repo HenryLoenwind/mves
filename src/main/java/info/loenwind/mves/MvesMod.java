@@ -14,7 +14,6 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
 
 @Mod(modid = MvesMod.MODID, version = MvesMod.VERSION, name = MvesMod.MODID)
 public class MvesMod {
@@ -33,9 +32,7 @@ public class MvesMod {
     CapabilityManager.INSTANCE.register(IEnergySupplier.class, new MvesStorage<IEnergySupplier>(), MvesDefaultImpl.class);
     CapabilityManager.INSTANCE.register(IEnergyTransporter.class, new MvesStorage<IEnergyTransporter>(), MvesDefaultImpl.class);
     CapabilityManager.INSTANCE.register(IEnergyAcceptor.class, new MvesStorage<IEnergyAcceptor>(), MvesDefaultImpl.class);
-    if (evt.getSide() == Side.SERVER) {
-      MinecraftForge.EVENT_BUS.register(this);
-    }
+    MinecraftForge.EVENT_BUS.register(this);
   }
 
   @EventHandler
