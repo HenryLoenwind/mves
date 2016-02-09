@@ -11,6 +11,7 @@ import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
@@ -174,6 +175,13 @@ public class BlockMvesWire extends Block {
     public String getName() {
       return this.name;
     }
+  }
+
+  @Override
+  public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ) {
+    IBlockState actualState = worldIn.getBlockState(pos).getBlock().getActualState(state, worldIn, pos);
+    System.out.println(actualState);
+    return true;
   }
 
 }
