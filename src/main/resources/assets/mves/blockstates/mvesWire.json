@@ -1,0 +1,82 @@
+{
+    "forge_marker": 1,
+    "defaults": {
+        "textures": {
+            "particle": "blocks/redstone_dust_cross",
+            "cross": "blocks/redstone_dust_cross",
+            "crossoverlay": "blocks/redstone_dust_cross_overlay",
+            "line": "blocks/redstone_dust_line",
+            "lineoverlay": "blocks/redstone_dust_line_overlay"
+        },
+        "uvlock": true
+    },
+    "variants": {
+        "down": {
+            "true": {
+                "submodel": "mves:wire_dot"
+            },
+            "false": {
+            }
+        },
+        "north": {
+            "none": {
+            },
+            "side": {
+                "submodel": {
+                    "side": { "model": "mves:wire_side" }
+                }
+            },
+            "up": {
+                "submodel": {
+                    "side": { "model": "mves:wire_side" },
+                    "upup": { "model": "mves:wire_up" }
+                }
+            }
+        },
+        "east": {
+            "none": {
+            },
+            "side": {
+                "submodel": {
+                    "side": { "model": "mves:wire_side", "y": 90 }
+                }
+            },
+            "up": {
+                "submodel": {
+                    "side": { "model": "mves:wire_side", "y": 90 },
+                    "upup": { "model": "mves:wire_up", "y": 90 }
+                }
+            }
+        },
+        "south": {
+            "none": {
+            },
+            "side": {
+                "submodel": {
+                    "side": { "model": "mves:wire_side", "y": 180 }
+                }
+            },
+            "up": {
+                "submodel": {
+                    "side": { "model": "mves:wire_side", "y": 180 },
+                    "upup": { "model": "mves:wire_up", "y": 180 }
+                }
+            }
+        },
+        "west": {
+            "none": {
+            },
+            "side": {
+                "submodel": {
+                    "side": { "model": "mves:wire_side", "y": 270 }
+                }
+            },
+            "up": {
+                "submodel": {
+                    "side": { "model": "mves:wire_side", "y": 270 },
+                    "upup": { "model": "mves:wire_up", "y": 270 }
+                }
+            }
+        }
+    }
+}

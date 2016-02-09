@@ -1,0 +1,19 @@
+{
+    "ambientocclusion": false,
+    "elements": [
+        {   "from": [ 5, 0.25, 5 ],
+            "to": [ 11, 0.25, 11 ],
+            "shade": false,
+            "faces": {
+                "up":    { "uv": [ 5, 5, 11, 11 ], "texture": "#cross", "tintindex": 0 }
+            }
+        },
+        {   "from": [ 5, 0.25, 5 ],
+            "to": [ 11, 0.25, 11 ],
+            "shade": false,
+            "faces": {
+                "up":    { "uv": [ 5, 5, 11, 11 ], "texture": "#crossoverlay" }
+            }
+        }
+    ]
+}

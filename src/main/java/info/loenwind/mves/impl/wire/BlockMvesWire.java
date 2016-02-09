@@ -7,6 +7,7 @@ import java.util.Random;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
@@ -38,75 +39,37 @@ public class BlockMvesWire extends Block {
   public static final PropertyEnum<EnumAttachPosition> EAST = PropertyEnum.<EnumAttachPosition> create("east", EnumAttachPosition.class);
   public static final PropertyEnum<EnumAttachPosition> SOUTH = PropertyEnum.<EnumAttachPosition> create("south", EnumAttachPosition.class);
   public static final PropertyEnum<EnumAttachPosition> WEST = PropertyEnum.<EnumAttachPosition> create("west", EnumAttachPosition.class);
+  public static final PropertyBool DOWN = PropertyBool.create("down");
 
   // D-U-N-S-W-E
-  private static final PropertyEnum[] mapping = { null, null, NORTH, SOUTH, WEST, EAST };
+  private static final IProperty[] mapping = { DOWN, null, NORTH, SOUTH, WEST, EAST };
 
   public BlockMvesWire() {
     super(Material.circuits);
     this.setDefaultState(this.blockState.getBaseState().withProperty(NORTH, EnumAttachPosition.NONE).withProperty(EAST, EnumAttachPosition.NONE)
-        .withProperty(SOUTH, EnumAttachPosition.NONE).withProperty(WEST, EnumAttachPosition.NONE));
+        .withProperty(SOUTH, EnumAttachPosition.NONE).withProperty(WEST, EnumAttachPosition.NONE).withProperty(DOWN, true));
     this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.0625F, 1.0F);
     setHardness(0.0F);
     setStepSound(soundTypeStone);
     setUnlocalizedName("mvesWire");
     disableStats();
-    //    setCreativeTab(CreativeTabs.tabRedstone);
   }
 
   public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
     WireConnections connections = new WireConnections(worldIn, pos);
+    int count = 0;
     for (EnumFacing direction : EnumFacing.Plane.HORIZONTAL) {
       if (connections.is(direction, EnumPosition.ABOVE)) {
         state = state.withProperty(mapping[direction.ordinal()], EnumAttachPosition.UP);
+        count++;
       } else if (connections.is(direction, EnumPosition.ADJ) || connections.is(direction, EnumPosition.BELOW)) {
         state = state.withProperty(mapping[direction.ordinal()], EnumAttachPosition.SIDE);
+        count++;
       }
     }
-    //    state = state.withProperty(WEST, this.getAttachPosition(worldIn, pos, EnumFacing.WEST));
-    //    state = state.withProperty(EAST, this.getAttachPosition(worldIn, pos, EnumFacing.EAST));
-    //    state = state.withProperty(NORTH, this.getAttachPosition(worldIn, pos, EnumFacing.NORTH));
-    //    state = state.withProperty(SOUTH, this.getAttachPosition(worldIn, pos, EnumFacing.SOUTH));
+    state = state.withProperty(DOWN, connections.is(EnumFacing.DOWN, EnumPosition.ADJ) || count == 0);
     return state;
   }
-
-  //  private EnumAttachPosition getAttachPosition(IBlockAccess worldIn, BlockPos pos, EnumFacing direction) {
-  //    BlockPos blockPosTarget = pos.offset(direction);
-  //    BlockPos blockPosAboveUs = pos.offset(EnumFacing.UP);
-  //    BlockPos blockPosAboveTarget = blockPosTarget.offset(EnumFacing.UP);
-  //    BlockPos blockPosBelowTarget = blockPosTarget.offset(EnumFacing.DOWN);
-  //
-  //    if (worldIn.isAirBlock(blockPosAboveUs) && worldIn.getBlockState(blockPosTarget).getBlock().isBlockNormalCube()
-  //        && isConnectable(worldIn, blockPosAboveTarget, direction)) {
-  //      return EnumAttachPosition.UP;
-  //    }
-  //    if (isConnectable(worldIn, blockPosTarget, direction)) {
-  //      return EnumAttachPosition.SIDE;
-  //    }
-  //    if (worldIn.getBlockState(blockPosBelowTarget).getBlock() == this && worldIn.isAirBlock(blockPosTarget)) {
-  //      return EnumAttachPosition.DOWN;
-  //    }
-  //    return EnumAttachPosition.NONE;
-  //  }
-  //
-  //  private boolean isConnectable(IBlockAccess world, BlockPos blockPosTarget, EnumFacing direction) {
-  //    TileEntity tileEntity = world.getTileEntity(blockPosTarget);
-  //    if (tileEntity != null) {
-  //      IEnergySupplier energySupplier = tileEntity.getCapability(MvesMod.CAP_EnergySupplier, direction.getOpposite());
-  //      if (energySupplier != null) {
-  //        return true;
-  //      }
-  //      IEnergyAcceptor energyAcceptor = tileEntity.getCapability(MvesMod.CAP_EnergyAcceptor, direction.getOpposite());
-  //      if (energyAcceptor != null) {
-  //        return true;
-  //      }
-  //      IEnergyTransporter energyTransporter = tileEntity.getCapability(MvesMod.CAP_EnergyTransporter, direction.getOpposite());
-  //      if (energyTransporter instanceof IEnergyTransporterRelay) {
-  //        return true;
-  //      }
-  //    }
-  //    return false;
-  //  }
 
   public AxisAlignedBB getCollisionBoundingBox(World worldIn, BlockPos pos, IBlockState state) {
     return null;
@@ -180,7 +143,7 @@ public class BlockMvesWire extends Block {
   }
 
   protected BlockState createBlockState() {
-    return new BlockState(this, new IProperty[] { NORTH, EAST, SOUTH, WEST });
+    return new BlockState(this, new IProperty[] { NORTH, EAST, SOUTH, WEST, DOWN });
   }
 
   @Override

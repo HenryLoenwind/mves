@@ -57,8 +57,13 @@ public class WireConnections {
     BlockPos blockPosAboveTarget = blockPosTarget.offset(EnumFacing.UP);
     BlockPos blockPosBelowTarget = blockPosTarget.offset(EnumFacing.DOWN);
 
-    findConnection(worldIn, blockPosTarget, direction, EnumPosition.ADJ);
-    if (worldIn.getBlockState(blockPosAboveTarget).getBlock() == BlockMvesWire.block && worldIn.isAirBlock(blockPosAboveUs)) {
+    if (worldIn.getBlockState(blockPosTarget).getBlock() == BlockMvesWire.block) {
+      set(direction, EnumPosition.ADJ, EnumType.TRP);
+    } else {
+      findConnection(worldIn, blockPosTarget, direction, EnumPosition.ADJ);
+    }
+    if (worldIn.getBlockState(blockPosAboveTarget).getBlock() == BlockMvesWire.block && worldIn.isAirBlock(blockPosAboveUs)
+        && worldIn.isSideSolid(blockPosTarget, direction.getOpposite(), false)) {
       set(direction, EnumPosition.ABOVE, EnumType.TRP);
     }
     if (worldIn.getBlockState(blockPosBelowTarget).getBlock() == BlockMvesWire.block && worldIn.isAirBlock(blockPosTarget)) {
