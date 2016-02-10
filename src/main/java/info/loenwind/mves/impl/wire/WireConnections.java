@@ -54,6 +54,7 @@ public class WireConnections {
   private void findConnection(IBlockAccess worldIn, BlockPos pos, EnumFacing direction) {
     BlockPos blockPosTarget = pos.offset(direction);
     BlockPos blockPosAboveUs = pos.offset(EnumFacing.UP);
+    BlockPos blockPosBelowUs = pos.offset(EnumFacing.DOWN);
     BlockPos blockPosAboveTarget = blockPosTarget.offset(EnumFacing.UP);
     BlockPos blockPosBelowTarget = blockPosTarget.offset(EnumFacing.DOWN);
 
@@ -63,10 +64,12 @@ public class WireConnections {
       findConnection(worldIn, blockPosTarget, direction, EnumPosition.ADJ);
     }
     if (worldIn.getBlockState(blockPosAboveTarget).getBlock() == BlockMvesWire.block && worldIn.isAirBlock(blockPosAboveUs)
-        && worldIn.isSideSolid(blockPosTarget, direction.getOpposite(), false)) {
+        && worldIn.getBlockState(blockPosTarget).getBlock().isSideSolid(worldIn, blockPosTarget, direction.getOpposite())) {
+      //        && worldIn.isSideSolid(blockPosTarget, direction.getOpposite(), false)) {
       set(direction, EnumPosition.ABOVE, EnumType.TRP);
     }
-    if (worldIn.getBlockState(blockPosBelowTarget).getBlock() == BlockMvesWire.block && worldIn.isAirBlock(blockPosTarget)) {
+    if (worldIn.getBlockState(blockPosBelowTarget).getBlock() == BlockMvesWire.block && worldIn.isAirBlock(blockPosTarget)
+        && worldIn.getBlockState(blockPosBelowUs).getBlock().isSideSolid(worldIn, blockPosBelowUs, direction)) {
       set(direction, EnumPosition.BELOW, EnumType.TRP);
     }
   }

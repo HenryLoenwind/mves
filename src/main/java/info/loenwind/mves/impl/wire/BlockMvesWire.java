@@ -91,25 +91,24 @@ public class BlockMvesWire extends Block {
   @SideOnly(Side.CLIENT)
   public int colorMultiplier(IBlockAccess worldIn, BlockPos pos, int renderPass) {
     IBlockState iblockstate = worldIn.getBlockState(pos);
-    return iblockstate.getBlock() != this ? super.colorMultiplier(worldIn, pos, renderPass) : this.colorMultiplier(15);
+    return iblockstate.getBlock() != this ? super.colorMultiplier(worldIn, pos, renderPass) : this.calcColorMultiplier(worldIn, pos);
   }
 
   @SideOnly(Side.CLIENT)
-  private int colorMultiplier(int powerLevel) {
-    float f = (float) powerLevel / 15.0F;
-    float r = f * 0.6F + 0.4F;
+  private int calcColorMultiplier(IBlockAccess worldIn, BlockPos pos) {
+    float c0 = Math.abs((Math.abs(pos.getX()) % 160) - 80) / 80f;
+    float c1 = Math.abs((pos.getY() % 16) - 8) / 8f;
+    float c2 = Math.abs((Math.abs(pos.getZ()) % 80) - 40) / 40f;
 
-    if (powerLevel == 0) {
-      r = 0.3F;
-    }
+    float r = c0 * 0.25F + c1 * 0.10f + (1f - c2) * 0.25f + 0.4F;
+    float g = c0 * 0.10F + (1f - c1) * 0.30f + c2 * 0.20f + 0.4F;
+    float b = (1f - c0) * 0.10F + c1 * 0.10f + c2 * 0.40f + 0.4F;
 
-    float b = f * f * 0.7F - 0.5F;
-    float g = f * f * 0.6F - 0.7F;
-
-    int r255 = MathHelper.clamp_int((int) (g * 255.0F), 0, 255);
+    int r255 = MathHelper.clamp_int((int) (r * 255.0F), 0, 255);
+    int g255 = MathHelper.clamp_int((int) (g * 255.0F), 0, 255);
     int b255 = MathHelper.clamp_int((int) (b * 255.0F), 0, 255);
-    int g255 = MathHelper.clamp_int((int) (r * 255.0F), 0, 255);
-    return -16777216 | r255 << 16 | b255 << 8 | g255;
+
+    return -16777216 | r255 << 16 | g255 << 8 | b255;
   }
 
   public void onNeighborBlockChange(World worldIn, BlockPos pos, IBlockState state, Block neighborBlock) {
@@ -177,10 +176,11 @@ public class BlockMvesWire extends Block {
     }
   }
 
+  // TODO
   @Override
   public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ) {
     IBlockState actualState = worldIn.getBlockState(pos).getBlock().getActualState(state, worldIn, pos);
-    System.out.println(actualState);
+    System.out.println(pos + ": " + actualState);
     return true;
   }
 

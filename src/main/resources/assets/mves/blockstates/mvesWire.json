@@ -4,9 +4,7 @@
         "textures": {
             "particle": "blocks/redstone_dust_cross",
             "cross": "blocks/redstone_dust_cross",
-            "crossoverlay": "blocks/redstone_dust_cross_overlay",
             "line": "blocks/redstone_dust_line",
-            "lineoverlay": "blocks/redstone_dust_line_overlay"
         }
     },
     "variants": {
@@ -15,6 +13,14 @@
                 "submodel": "mves:wire_dot"
             },
             "false": {
+                "submodel": {
+                    "center": [
+                        { "model": "mves:wire_center" },
+                        { "model": "mves:wire_center", "y": 90 },
+                        { "model": "mves:wire_center", "y": 180 },
+                        { "model": "mves:wire_center", "y": 270 }
+                    ]
+                }
             }
         },
         "north": {
@@ -22,12 +28,18 @@
             },
             "side": {
                 "submodel": {
-                    "side1": { "model": "mves:wire_side" }
+                    "side1": [
+                        { "model": "mves:wire_side", "weight": 3 },
+                        { "model": "mves:wire_side2", "weight": 1 }
+                    ]
                 }
             },
             "up": {
                 "submodel": {
-                    "side1": { "model": "mves:wire_side" },
+                    "side1": [
+                        { "model": "mves:wire_side", "weight": 3 },
+                        { "model": "mves:wire_side2", "weight": 1 }
+                    ],
                     "upup1": { "model": "mves:wire_up" }
                 }
             }
@@ -37,12 +49,18 @@
             },
             "side": {
                 "submodel": {
-                    "side2": { "model": "mves:wire_side", "y": 90 }
+                    "side2": [
+                        { "model": "mves:wire_side", "weight": 3, "y": 90 },
+                        { "model": "mves:wire_side2", "weight": 1, "y": 90 }
+                    ]
                 }
             },
             "up": {
                 "submodel": {
-                    "side2": { "model": "mves:wire_side", "y": 90 },
+                    "side2": [
+                        { "model": "mves:wire_side", "weight": 3, "y": 90 },
+                        { "model": "mves:wire_side2", "weight": 1, "y": 90 }
+                    ],
                     "upup2": { "model": "mves:wire_up", "y": 90 }
                 }
             }
@@ -52,12 +70,18 @@
             },
             "side": {
                 "submodel": {
-                    "side3": { "model": "mves:wire_side", "y": 180 }
+                    "side3": [
+                        { "model": "mves:wire_side", "weight": 3, "y": 180 },
+                        { "model": "mves:wire_side2", "weight": 1, "y": 180 }
+                    ]
                 }
             },
             "up": {
                 "submodel": {
-                    "side3": { "model": "mves:wire_side", "y": 180 },
+                    "side3": [
+                        { "model": "mves:wire_side", "weight": 3, "y": 180 },
+                        { "model": "mves:wire_side2", "weight": 1, "y": 180 }
+                    ],
                     "upup3": { "model": "mves:wire_up", "y": 180 }
                 }
             }
@@ -67,12 +91,19 @@
             },
             "side": {
                 "submodel": {
-                    "side4": { "model": "mves:wire_side", "y": 270 }
+                    "side4": [
+                        { "model": "mves:wire_side", "weight": 3, "y": 270 },
+                        { "model": "mves:wire_side2", "weight": 1, "y": 270 }
+                    ]
                 }
             },
             "up": {
                 "submodel": {
-                    "side4a": { "model": "mves:wire_side", "y": 270 }
+                    "side4": [
+                        { "model": "mves:wire_side", "weight": 3, "y": 270 },
+                        { "model": "mves:wire_side2", "weight": 1, "y": 270 }
+                    ],
+                    "upup4": { "model": "mves:wire_up", "y": 270 }
                 }
             }
         }

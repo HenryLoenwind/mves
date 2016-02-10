@@ -1,0 +1,12 @@
+{
+    "ambientocclusion": false,
+    "elements": [
+        {   "from": [ 7, 0.25, 7 ],
+            "to": [ 9, 0.25, 9 ],
+            "shade": false,
+            "faces": {
+                "up":    { "uv": [ 7, 7, 9, 9 ], "texture": "#line", "rotation": 90, "tintindex": 0 }
+            }
+        }
+    ]
+}

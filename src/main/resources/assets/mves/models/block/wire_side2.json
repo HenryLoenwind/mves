@@ -5,7 +5,7 @@
             "to": [ 16, 0.25, 7 ],
             "shade": false,
             "faces": {
-                "up":    { "uv": [ 0, 0, 7, 16 ], "texture": "#line", "rotation": 90, "tintindex": 0 }
+                "up":    { "uv": [ 9, 0, 16, 16 ], "texture": "#line", "rotation": 270, "tintindex": 0 }
             }
         }
     ]
