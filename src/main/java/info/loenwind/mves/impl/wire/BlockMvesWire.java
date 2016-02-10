@@ -1,9 +1,7 @@
 package info.loenwind.mves.impl.wire;
 
+import info.loenwind.mves.MvesMod;
 import info.loenwind.mves.impl.wire.WireConnections.EnumConnection;
-
-import java.util.Random;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -12,10 +10,10 @@ import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
@@ -34,9 +32,13 @@ public class BlockMvesWire extends Block implements ITileEntityProvider {
 
   public static BlockMvesWire block;
 
+  public static String name() {
+    return "mvesWire";
+  }
+
   public static void create() {
-    GameRegistry.registerBlock(block = new BlockMvesWire(), null, "mvesWire");
-    GameRegistry.registerTileEntity(TileMvesWire.class, "mvesWire_te");
+    GameRegistry.registerBlock(block = new BlockMvesWire(), name());
+    GameRegistry.registerTileEntity(TileMvesWire.class, MvesMod.MODID + "_" + name() + "_te");
   }
 
   public static final PropertyEnum<EnumAttachPosition> NORTH = PropertyEnum.<EnumAttachPosition> create("north", EnumAttachPosition.class);
@@ -56,6 +58,7 @@ public class BlockMvesWire extends Block implements ITileEntityProvider {
     setHardness(0.0F);
     setStepSound(soundTypeStone);
     setUnlocalizedName("mvesWire");
+    setCreativeTab(CreativeTabs.tabRedstone);
     disableStats();
     isBlockContainer = true;
   }
@@ -116,24 +119,6 @@ public class BlockMvesWire extends Block implements ITileEntityProvider {
     return -16777216 | r255 << 16 | g255 << 8 | b255;
   }
 
-  public void onNeighborBlockChange(World worldIn, BlockPos pos, IBlockState state, Block neighborBlock) {
-    if (!worldIn.isRemote) {
-      if (!canPlaceBlockAt(worldIn, pos)) {
-        dropBlockAsItem(worldIn, pos, state, 0);
-        worldIn.setBlockToAir(pos);
-      }
-    }
-  }
-
-  public Item getItemDropped(IBlockState state, Random rand, int fortune) {
-    return ItemMvesWire.item;
-  }
-
-  @SideOnly(Side.CLIENT)
-  public Item getItem(World worldIn, BlockPos pos) {
-    return ItemMvesWire.item;
-  }
-
   @SideOnly(Side.CLIENT)
   public EnumWorldBlockLayer getBlockLayer() {
     return EnumWorldBlockLayer.CUTOUT;
@@ -180,7 +165,9 @@ public class BlockMvesWire extends Block implements ITileEntityProvider {
   @Override
   public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ) {
     IBlockState actualState = worldIn.getBlockState(pos).getBlock().getActualState(state, worldIn, pos);
-    System.out.println(pos + ": " + actualState);
+    TileEntity tileEntity = worldIn.getTileEntity(pos);
+    WireConnections connections = tileEntity instanceof TileMvesWire ? ((TileMvesWire) tileEntity).getConnections() : null;
+    System.out.println(pos + ": " + actualState + " " + connections);
     return true;
   }
 
@@ -199,18 +186,56 @@ public class BlockMvesWire extends Block implements ITileEntityProvider {
   }
 
   @Override
+  public void onNeighborBlockChange(World worldIn, BlockPos pos, IBlockState state, Block neighborBlock) {
+    if (!worldIn.isRemote) {
+      if (!canPlaceBlockAt(worldIn, pos)) {
+        dropBlockAsItem(worldIn, pos, state, 0);
+        worldIn.setBlockToAir(pos);
+      } else {
+        onNeighborChange(worldIn, pos, null);
+      }
+    }
+  }
+
+  @Override
   public void onNeighborChange(IBlockAccess worldIn, BlockPos pos, BlockPos neighbor) {
     TileEntity tileEntity = worldIn.getTileEntity(pos);
-    if (tileEntity instanceof TileMvesWire) {
+    if (tileEntity instanceof TileMvesWire && !tileEntity.getWorld().isRemote) {
       ((TileMvesWire) tileEntity).setConnections(new WireConnections(worldIn, pos));
     }
   }
 
   public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
     TileEntity tileEntity = worldIn.getTileEntity(pos);
-    if (tileEntity instanceof TileMvesWire) {
-      ((TileMvesWire) tileEntity).setConnections(new WireConnections(worldIn, pos));
+    if (tileEntity instanceof TileMvesWire && !worldIn.isRemote) {
+      WireConnections connections = new WireConnections(worldIn, pos);
+      ((TileMvesWire) tileEntity).setConnections(connections);
+      notifyIndirectNeighbors(worldIn, pos, connections);
     }
+  }
+
+  private void notifyIndirectNeighbors(World worldIn, BlockPos pos, WireConnections connections) {
+    for (EnumFacing direction : EnumFacing.Plane.HORIZONTAL) {
+      if (connections.is(direction, EnumConnection.ABOVE)) {
+        BlockPos posTarget = pos.offset(direction).up();
+        Block blockTarget = worldIn.getBlockState(posTarget).getBlock();
+        blockTarget.onNeighborBlockChange(worldIn, posTarget, worldIn.getBlockState(posTarget), this);
+      } else if (connections.is(direction, EnumConnection.BELOW)) {
+        BlockPos posTarget = pos.offset(direction).down();
+        Block blockTarget = worldIn.getBlockState(posTarget).getBlock();
+        blockTarget.onNeighborBlockChange(worldIn, posTarget, worldIn.getBlockState(posTarget), this);
+      }
+
+    }
+  }
+
+  @Override
+  public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
+    TileEntity tileEntity = worldIn.getTileEntity(pos);
+    if (tileEntity instanceof TileMvesWire && !worldIn.isRemote) {
+      notifyIndirectNeighbors(worldIn, pos, ((TileMvesWire) tileEntity).getConnections());
+    }
+    super.breakBlock(worldIn, pos, state);
   }
 
 }
