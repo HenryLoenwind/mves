@@ -1,19 +1,22 @@
 package info.loenwind.mves.impl.wire;
 
-import info.loenwind.mves.impl.wire.WireConnections.EnumPosition;
+import info.loenwind.mves.impl.wire.WireConnections.EnumConnection;
 
 import java.util.Random;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
@@ -27,7 +30,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class BlockMvesWire extends Block {
+public class BlockMvesWire extends Block implements ITileEntityProvider {
 
   public static BlockMvesWire block;
 
@@ -54,21 +57,23 @@ public class BlockMvesWire extends Block {
     setStepSound(soundTypeStone);
     setUnlocalizedName("mvesWire");
     disableStats();
+    isBlockContainer = true;
   }
 
   public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
-    WireConnections connections = new WireConnections(worldIn, pos);
+    TileEntity tileEntity = worldIn.getTileEntity(pos);
+    WireConnections connections = tileEntity instanceof TileMvesWire ? ((TileMvesWire) tileEntity).getConnections() : new WireConnections(worldIn, pos);
     int count = 0;
     for (EnumFacing direction : EnumFacing.Plane.HORIZONTAL) {
-      if (connections.is(direction, EnumPosition.ABOVE)) {
+      if (connections.is(direction, EnumConnection.ABOVE)) {
         state = state.withProperty(mapping[direction.ordinal()], EnumAttachPosition.UP);
         count++;
-      } else if (connections.is(direction, EnumPosition.ADJ) || connections.is(direction, EnumPosition.BELOW)) {
+      } else if (connections.is(direction, EnumConnection._ANY_LEVEL)) {
         state = state.withProperty(mapping[direction.ordinal()], EnumAttachPosition.SIDE);
         count++;
       }
     }
-    state = state.withProperty(DOWN, connections.is(EnumFacing.DOWN, EnumPosition.ADJ) || count == 0);
+    state = state.withProperty(DOWN, count == 0 || connections.is(EnumFacing.DOWN, EnumConnection._ANY));
     return state;
   }
 
@@ -151,11 +156,6 @@ public class BlockMvesWire extends Block {
     return true;
   }
 
-  @Override
-  public TileEntity createTileEntity(World world, IBlockState state) {
-    return new TileMvesWire();
-  }
-
   protected static enum EnumAttachPosition implements IStringSerializable {
     UP("up"),
     SIDE("side"),
@@ -182,6 +182,35 @@ public class BlockMvesWire extends Block {
     IBlockState actualState = worldIn.getBlockState(pos).getBlock().getActualState(state, worldIn, pos);
     System.out.println(pos + ": " + actualState);
     return true;
+  }
+
+  @Override
+  public TileEntity createNewTileEntity(World worldIn, int meta) {
+    return new TileMvesWire();
+  }
+
+  @Override
+  public boolean onBlockEventReceived(World worldIn, BlockPos pos, IBlockState state, int eventID, int eventParam) {
+    TileEntity tileEntity = worldIn.getTileEntity(pos);
+    if (tileEntity instanceof TileMvesWire) {
+      return tileEntity.receiveClientEvent(eventID, eventParam);
+    }
+    return super.onBlockEventReceived(worldIn, pos, state, eventID, eventParam);
+  }
+
+  @Override
+  public void onNeighborChange(IBlockAccess worldIn, BlockPos pos, BlockPos neighbor) {
+    TileEntity tileEntity = worldIn.getTileEntity(pos);
+    if (tileEntity instanceof TileMvesWire) {
+      ((TileMvesWire) tileEntity).setConnections(new WireConnections(worldIn, pos));
+    }
+  }
+
+  public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+    TileEntity tileEntity = worldIn.getTileEntity(pos);
+    if (tileEntity instanceof TileMvesWire) {
+      ((TileMvesWire) tileEntity).setConnections(new WireConnections(worldIn, pos));
+    }
   }
 
 }
