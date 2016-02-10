@@ -5,6 +5,9 @@ import info.loenwind.mves.IEnergySupplier;
 import info.loenwind.mves.IEnergyTransporter;
 import info.loenwind.mves.IEnergyTransporterRelay;
 import info.loenwind.mves.MvesMod;
+
+import java.util.Arrays;
+
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
@@ -86,11 +89,17 @@ public class WireConnections {
         set(direction, position, EnumType.ACC);
       }
       IEnergyTransporter energyTransporter = tileEntity.getCapability(MvesMod.CAP_EnergyTransporter, direction.getOpposite());
-      set(direction, position, EnumType.TRN);
       if (energyTransporter instanceof IEnergyTransporterRelay) {
         set(direction, position, EnumType.TRP);
+      } else if (energyTransporter != null) {
+        set(direction, position, EnumType.TRN);
       }
     }
+  }
+
+  @Override
+  public String toString() {
+    return "WireConnections [data=" + Arrays.toString(data) + "]";
   }
 
 }
