@@ -4,7 +4,7 @@
         "textures": {
             "particle": "blocks/redstone_dust_cross",
             "cross": "blocks/redstone_dust_cross",
-            "line": "blocks/redstone_dust_line",
+            "line": "blocks/redstone_dust_line"
         }
     },
     "variants": {
