@@ -1,6 +1,7 @@
 package info.loenwind.mves.impl.wire;
 
 import info.loenwind.mves.IEnergyStack;
+import info.loenwind.mves.config.Config;
 
 public class LossyEnergyStack implements IEnergyStack {
 
@@ -14,13 +15,13 @@ public class LossyEnergyStack implements IEnergyStack {
     if (parent instanceof LossyEnergyStack) {
       this.gen = ((LossyEnergyStack) parent).gen + 1;
     } else {
-      this.gen = 0;
+      this.gen = 1;
     }
   }
 
   @Override
   public int getStackSize() {
-    return gen > 2 ? (int) (parent.getStackSize() * (1f - loss)) : parent.getStackSize();
+    return gen > Config.rainbowWireLosslessDistance.getInt() ? (int) (parent.getStackSize() * (1f - loss)) : parent.getStackSize();
   }
 
   @Override

@@ -3,14 +3,13 @@ package info.loenwind.mves.impl.furnace;
 import info.loenwind.mves.IEnergyAcceptor;
 import info.loenwind.mves.IEnergyOffer;
 import info.loenwind.mves.IEnergyStack;
+import info.loenwind.mves.config.Config;
 
 import java.util.Iterator;
 
 import net.minecraft.tileentity.TileEntityFurnace;
 
 public class FurnaceEnergyAcceptor implements IEnergyAcceptor {
-
-  public static final int ENERGY_PER_TICK = 40;
 
   private final TileEntityFurnace furnace;
 
@@ -23,6 +22,7 @@ public class FurnaceEnergyAcceptor implements IEnergyAcceptor {
     if (furnace.getStackInSlot(0) == null) {
       return 0;
     }
+    int energyPerTick = Config.furnacePowerPerTickConsumed.getInt();
     int remainingFuel = furnace.getField(0);
     int cookTime = furnace.getField(2);
     int totalCookTime = furnace.getField(3);
@@ -32,21 +32,21 @@ public class FurnaceEnergyAcceptor implements IEnergyAcceptor {
     if (maxTicks <= 0) {
       return 0;
     }
-    int maxEnergy = maxTicks * ENERGY_PER_TICK;
+    int maxEnergy = maxTicks * energyPerTick;
 
     int used = 0;
     Iterator<IEnergyStack> iterator = offer.getStacks().iterator();
     while (used < maxEnergy && iterator.hasNext()) {
       IEnergyStack next = iterator.next();
       System.out.println("Offer in for " + furnace + ", next.getStackSize()=" + next.getStackSize());
-      while (used < maxEnergy && next != null && next.getStackSize() >= ENERGY_PER_TICK) {
-        int extractEnergy = next.extractEnergy(ENERGY_PER_TICK);
+      while (used < maxEnergy && next != null && next.getStackSize() >= energyPerTick) {
+        int extractEnergy = next.extractEnergy(energyPerTick);
         System.out.println("Offer in for " + furnace + ", extractEnergy=" + extractEnergy);
         used += extractEnergy;
       }
     }
 
-    int addtlTicks = used / ENERGY_PER_TICK;
+    int addtlTicks = used / energyPerTick;
     if (addtlTicks > 0) {
       if (remainingFuel + addtlTicks == 1) {
         addtlTicks++;

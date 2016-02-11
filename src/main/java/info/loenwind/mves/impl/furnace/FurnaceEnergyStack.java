@@ -1,12 +1,11 @@
 package info.loenwind.mves.impl.furnace;
 
 import info.loenwind.mves.IEnergyStack;
+import info.loenwind.mves.config.Config;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityFurnace;
 
 public class FurnaceEnergyStack implements IEnergyStack {
-
-  public static final int ENERGY_PER_TICK = 40;
 
   private final TileEntityFurnace furnace;
   private boolean used = false;
@@ -17,7 +16,7 @@ public class FurnaceEnergyStack implements IEnergyStack {
 
   @Override
   public int getStackSize() {
-    return used ? 0 : ENERGY_PER_TICK;
+    return used ? 0 : Config.furnacePowerPerTickProduced.getInt();
   }
 
   @Override
@@ -29,7 +28,7 @@ public class FurnaceEnergyStack implements IEnergyStack {
       if (!furnace.isBurning() && !ignite()) {
         return 0;
       }
-      return ENERGY_PER_TICK;
+      return Config.furnacePowerPerTickProduced.getInt();
     }
   }
 

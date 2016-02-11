@@ -1,18 +1,20 @@
 package info.loenwind.mves.impl.wire;
 
 import info.loenwind.mves.IEnergyOffer;
+import info.loenwind.mves.IEnergyStack;
 import info.loenwind.mves.IEnergyTransporterRelay;
+import info.loenwind.mves.config.Config;
+import info.loenwind.mves.impl.SimpleEnergyOffer;
 import info.loenwind.mves.impl.SimpleEnergyTransporter;
 
 import java.util.EnumSet;
+import java.util.List;
 
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
 public class WireEnergyTransporter extends SimpleEnergyTransporter implements IEnergyTransporterRelay {
-
-  private static final float LOSS = 1f / 3f;
 
   private final WireConnections connections;
 
@@ -21,13 +23,17 @@ public class WireEnergyTransporter extends SimpleEnergyTransporter implements IE
     this.connections = connections;
   }
 
+  protected IEnergyOffer createOffer(List<IEnergyStack> stacks) {
+    return new LossyEnergyOffer(new SimpleEnergyOffer(stacks), Config.rainbowWireLossPerBlock.getFloat());
+  }
+
   @Override
   public int relayEnergy(IEnergyOffer offer) {
     if (offer.hasSeen(this)) {
       return 0;
     }
     offer.see(this);
-    LossyEnergyOffer offer2 = new LossyEnergyOffer(offer, LOSS);
+    LossyEnergyOffer offer2 = new LossyEnergyOffer(offer, Config.rainbowWireLossPerBlock.getFloat());
     if (offer2.getLimit() > 0) {
       return push(world, blockPos, directionsOut, offer2);
     } else {

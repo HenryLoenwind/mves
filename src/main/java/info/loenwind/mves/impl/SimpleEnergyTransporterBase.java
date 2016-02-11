@@ -28,8 +28,12 @@ public abstract class SimpleEnergyTransporterBase implements IEnergyTransporter 
     if (stacks.isEmpty()) {
       return 0;
     } else {
-      return push(world, blockPos, directionsOut, new SimpleEnergyOffer(stacks));
+      return push(world, blockPos, directionsOut, createOffer(stacks));
     }
+  }
+
+  protected IEnergyOffer createOffer(List<IEnergyStack> stacks) {
+    return new SimpleEnergyOffer(stacks);
   }
 
   protected List<IEnergyStack> collect(World world, BlockPos blockPos, EnumSet<EnumFacing> directions) {
