@@ -9,23 +9,28 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 public class FurnaceCapabilityProvider implements ICapabilityProvider {
 
   private final TileEntityFurnace furnace;
+  private FurnaceEnergySupplier supplier;
+  private FurnaceEnergyAcceptor acceptor;
 
   public FurnaceCapabilityProvider(TileEntityFurnace furnace) {
     this.furnace = furnace;
+    supplier = new FurnaceEnergySupplier(furnace);
+    acceptor = new FurnaceEnergyAcceptor(furnace);
   }
 
   @Override
   public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-    return facing != null && (capability == MvesMod.CAP_EnergySupplier || capability == MvesMod.CAP_EnergyAcceptor) && !furnace.getWorld().isRemote;
+    return furnace.hasWorldObj() && !furnace.getWorld().isRemote && facing != null
+        && (capability == MvesMod.CAP_EnergySupplier || capability == MvesMod.CAP_EnergyAcceptor);
   }
 
   @Override
   public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-    if (facing != null && !furnace.getWorld().isRemote) {
+    if (furnace.hasWorldObj() && !furnace.getWorld().isRemote && facing != null) {
       if (capability == MvesMod.CAP_EnergySupplier) {
-        return (T) new FurnaceEnergySupplier(furnace);
+        return (T) supplier;
       } else if (capability == MvesMod.CAP_EnergyAcceptor) {
-        return (T) new FurnaceEnergyAcceptor(furnace);
+        return (T) acceptor;
       }
     }
     return null;

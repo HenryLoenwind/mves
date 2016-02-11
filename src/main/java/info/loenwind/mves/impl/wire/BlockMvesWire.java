@@ -65,7 +65,7 @@ public class BlockMvesWire extends Block implements ITileEntityProvider {
 
   public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
     TileEntity tileEntity = worldIn.getTileEntity(pos);
-    WireConnections connections = tileEntity instanceof TileMvesWire ? ((TileMvesWire) tileEntity).getConnections() : new WireConnections(worldIn, pos);
+    WireConnections connections = tileEntity instanceof TileMvesWire ? ((TileMvesWire) tileEntity).getConnections() : new WireConnections(0);
     int count = 0;
     for (EnumFacing direction : EnumFacing.Plane.HORIZONTAL) {
       if (connections.is(direction, EnumConnection.ABOVE)) {

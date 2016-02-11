@@ -24,8 +24,11 @@ public class FurnaceEnergyAcceptor implements IEnergyAcceptor {
       return 0;
     }
     int remainingFuel = furnace.getField(0);
-    int neededCookTime = furnace.getField(2);
+    int cookTime = furnace.getField(2);
+    int totalCookTime = furnace.getField(3);
+    int neededCookTime = totalCookTime - cookTime;
     int maxTicks = neededCookTime - remainingFuel;
+    System.out.println("Offer in for " + furnace + ", maxTicks=" + maxTicks + " neededCookTime=" + neededCookTime);
     if (maxTicks <= 0) {
       return 0;
     }
@@ -35,15 +38,21 @@ public class FurnaceEnergyAcceptor implements IEnergyAcceptor {
     Iterator<IEnergyStack> iterator = offer.getStacks().iterator();
     while (used < maxEnergy && iterator.hasNext()) {
       IEnergyStack next = iterator.next();
+      System.out.println("Offer in for " + furnace + ", next.getStackSize()=" + next.getStackSize());
       while (used < maxEnergy && next != null && next.getStackSize() >= ENERGY_PER_TICK) {
         int extractEnergy = next.extractEnergy(ENERGY_PER_TICK);
+        System.out.println("Offer in for " + furnace + ", extractEnergy=" + extractEnergy);
         used += extractEnergy;
       }
     }
 
     int addtlTicks = used / ENERGY_PER_TICK;
     if (addtlTicks > 0) {
+      if (remainingFuel + addtlTicks == 1) {
+        addtlTicks++;
+      }
       furnace.setField(0, remainingFuel + addtlTicks);
+      System.out.println("Offer in for " + furnace + ", remainingFuel=" + remainingFuel + " furnace.getField(0)=" + furnace.getField(0));
     }
 
     return used;

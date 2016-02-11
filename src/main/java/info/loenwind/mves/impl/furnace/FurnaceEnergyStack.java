@@ -1,6 +1,7 @@
 package info.loenwind.mves.impl.furnace;
 
 import info.loenwind.mves.IEnergyStack;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityFurnace;
 
 public class FurnaceEnergyStack implements IEnergyStack {
@@ -25,6 +26,9 @@ public class FurnaceEnergyStack implements IEnergyStack {
       return 0;
     } else {
       used = true;
+      if (!furnace.isBurning() && !ignite()) {
+        return 0;
+      }
       return ENERGY_PER_TICK;
     }
   }
@@ -36,6 +40,25 @@ public class FurnaceEnergyStack implements IEnergyStack {
 
   @Override
   public boolean isStoredEnergy() {
+    return false;
+  }
+
+  private static final int furnaceBurnTime = 0;
+  private static final int currentItemBurnTime = 1;
+
+  private boolean ignite() {
+    ItemStack stackInSlot = furnace.getStackInSlot(1);
+    int burnTime = furnace.getItemBurnTime(stackInSlot);
+    if (burnTime > 0) {
+      furnace.setField(currentItemBurnTime, burnTime);
+      furnace.setField(furnaceBurnTime, burnTime - 1);
+      stackInSlot.stackSize--;
+      if (stackInSlot.stackSize <= 0) {
+        stackInSlot = stackInSlot.getItem().getContainerItem(stackInSlot);
+      }
+      furnace.setInventorySlotContents(1, stackInSlot);
+      return true;
+    }
     return false;
   }
 

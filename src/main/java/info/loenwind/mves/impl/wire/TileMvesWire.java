@@ -1,5 +1,7 @@
 package info.loenwind.mves.impl.wire;
 
+import info.loenwind.mves.IEnergyOffer;
+import info.loenwind.mves.IEnergyTransporterRelay;
 import info.loenwind.mves.MvesMod;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -7,12 +9,21 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
 import net.minecraftforge.common.capabilities.Capability;
 
-public class TileMvesWire extends TileEntity {
+public class TileMvesWire extends TileEntity implements ITickable {
 
   private static final int _CONN = 0xc011;
   private WireConnections connections = WireConnections.NONE;
+  private WireEnergyTransporter transporter = null;
+
+  private static final IEnergyTransporterRelay NULL_RELAY = new IEnergyTransporterRelay() {
+    @Override
+    public int relayEnergy(IEnergyOffer offer) {
+      return 0;
+    }
+  };
 
   public TileMvesWire() {
     super();
@@ -25,7 +36,9 @@ public class TileMvesWire extends TileEntity {
 
   @Override
   public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-    // TODO Auto-generated method stub
+    if (!worldObj.isRemote && capability == MvesMod.CAP_EnergyTransporter) {
+      return (T) (transporter != null ? transporter : NULL_RELAY);
+    }
     return super.getCapability(capability, facing);
   }
 
@@ -33,14 +46,21 @@ public class TileMvesWire extends TileEntity {
     return connections;
   }
 
+  int i = 0;
   public void setConnections(WireConnections connections) {
     if (this.connections.getData() != connections.getData()) {
+      if (this.worldObj != null && !worldObj.isRemote && i++ > 100) {//TODO
+        System.out.println(getPos() + ": " + this.connections + " -> " + connections);
+        throw new RuntimeException();
+      }
       this.connections = connections;
+      transporter = null;
       if (this.worldObj != null) {
-        markDirty();
         if (worldObj.isRemote) {
           worldObj.markBlockRangeForRenderUpdate(getPos(), getPos());
         } else {
+          markDirty();
+          transporter = connections.getData() == 0 ? null : new WireEnergyTransporter(worldObj, getPos(), connections);
           worldObj.addBlockEvent(getPos(), getBlockType(), _CONN, connections.getData());
         }
       }
@@ -69,7 +89,9 @@ public class TileMvesWire extends TileEntity {
   @Override
   public boolean receiveClientEvent(int id, int type) {
     if (id == _CONN) {
-      setConnections(new WireConnections(type));
+      if (this.worldObj != null && worldObj.isRemote) {
+        setConnections(new WireConnections(type));
+      }
       return true;
     }
     return super.receiveClientEvent(id, type);
@@ -78,6 +100,13 @@ public class TileMvesWire extends TileEntity {
   @Override
   public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
     setConnections(new WireConnections(pkt.getNbtCompound().getInteger("conn")));
+  }
+
+  @Override
+  public void update() {
+    if (transporter != null) {
+      transporter.transport();
+    }
   }
 
 }
