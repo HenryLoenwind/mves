@@ -109,7 +109,11 @@ public class WireConnections {
 
   @Override
   public String toString() {
-    return "WireConnections [data=" + Integer.toBinaryString(data) + "]";
+    String s = Integer.toBinaryString(data);
+    for (int i = 0; i <= 5; i++) {
+      s = s.replaceAll("(\\d)(\\d\\d\\d\\d\\d(\\.|$))", "$1.$2");
+    }
+    return "[" + s + "]";
   }
 
 }

@@ -18,6 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.util.IStringSerializable;
@@ -161,14 +162,17 @@ public class BlockMvesWire extends Block implements ITileEntityProvider {
     }
   }
 
-  // TODO
   @Override
   public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ) {
-    IBlockState actualState = worldIn.getBlockState(pos).getBlock().getActualState(state, worldIn, pos);
-    TileEntity tileEntity = worldIn.getTileEntity(pos);
-    WireConnections connections = tileEntity instanceof TileMvesWire ? ((TileMvesWire) tileEntity).getConnections() : null;
-    System.out.println(pos + ": " + actualState + " " + connections);
-    return true;
+    if (playerIn.capabilities.isCreativeMode) {
+      TileEntity tileEntity = worldIn.getTileEntity(pos);
+      WireConnections connections = tileEntity instanceof TileMvesWire ? ((TileMvesWire) tileEntity).getConnections() : null;
+      playerIn.addChatMessage(new ChatComponentText(state.toString().replace("mves:mvesWire", "") + " " + connections
+          + (worldIn.isRemote ? " on client" : " on server")));
+      return true;
+    } else {
+      return false;
+    }
   }
 
   @Override

@@ -10,6 +10,7 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 
 public class TileMvesWire extends TileEntity implements ITickable {
@@ -49,10 +50,6 @@ public class TileMvesWire extends TileEntity implements ITickable {
   int i = 0;
   public void setConnections(WireConnections connections) {
     if (this.connections.getData() != connections.getData()) {
-      if (this.worldObj != null && !worldObj.isRemote && i++ > 100) {//TODO
-        System.out.println(getPos() + ": " + this.connections + " -> " + connections);
-        throw new RuntimeException();
-      }
       this.connections = connections;
       transporter = null;
       if (this.worldObj != null) {
@@ -63,6 +60,8 @@ public class TileMvesWire extends TileEntity implements ITickable {
           transporter = connections.getData() == 0 ? null : new WireEnergyTransporter(worldObj, getPos(), connections);
           worldObj.addBlockEvent(getPos(), getBlockType(), _CONN, connections.getData());
         }
+      } else {
+        // cont'd in setWorldObj()
       }
     }
   }
@@ -71,6 +70,14 @@ public class TileMvesWire extends TileEntity implements ITickable {
   public void readFromNBT(NBTTagCompound compound) {
     super.readFromNBT(compound);
     setConnections(new WireConnections(compound.getInteger("conn")));
+  }
+
+  @Override
+  public void setWorldObj(World worldIn) {
+    super.setWorldObj(worldIn);
+    if (!worldObj.isRemote && transporter == null && connections.getData() != 0) {
+      transporter = new WireEnergyTransporter(worldObj, getPos(), connections);
+    }
   }
 
   @Override

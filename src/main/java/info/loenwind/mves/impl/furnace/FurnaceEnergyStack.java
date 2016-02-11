@@ -2,6 +2,7 @@ package info.loenwind.mves.impl.furnace;
 
 import info.loenwind.mves.IEnergyStack;
 import info.loenwind.mves.config.Config;
+import net.minecraft.block.BlockFurnace;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityFurnace;
 
@@ -56,6 +57,8 @@ public class FurnaceEnergyStack implements IEnergyStack {
         stackInSlot = stackInSlot.getItem().getContainerItem(stackInSlot);
       }
       furnace.setInventorySlotContents(1, stackInSlot);
+      BlockFurnace.setState(furnace.isBurning(), furnace.getWorld(), furnace.getPos());
+      furnace.markDirty();
       return true;
     }
     return false;

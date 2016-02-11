@@ -7,6 +7,7 @@ import info.loenwind.mves.config.Config;
 
 import java.util.Iterator;
 
+import net.minecraft.block.BlockFurnace;
 import net.minecraft.tileentity.TileEntityFurnace;
 
 public class FurnaceEnergyAcceptor implements IEnergyAcceptor {
@@ -23,12 +24,12 @@ public class FurnaceEnergyAcceptor implements IEnergyAcceptor {
       return 0;
     }
     int energyPerTick = Config.furnacePowerPerTickConsumed.getInt();
+    boolean wasBurning = furnace.isBurning();
     int remainingFuel = furnace.getField(0);
     int cookTime = furnace.getField(2);
     int totalCookTime = furnace.getField(3);
     int neededCookTime = totalCookTime - cookTime;
-    int maxTicks = neededCookTime - remainingFuel;
-    System.out.println("Offer in for " + furnace + ", maxTicks=" + maxTicks + " neededCookTime=" + neededCookTime);
+    int maxTicks = neededCookTime - remainingFuel + 1;
     if (maxTicks <= 0) {
       return 0;
     }
@@ -38,21 +39,22 @@ public class FurnaceEnergyAcceptor implements IEnergyAcceptor {
     Iterator<IEnergyStack> iterator = offer.getStacks().iterator();
     while (used < maxEnergy && iterator.hasNext()) {
       IEnergyStack next = iterator.next();
-      System.out.println("Offer in for " + furnace + ", next.getStackSize()=" + next.getStackSize());
       while (used < maxEnergy && next != null && next.getStackSize() >= energyPerTick) {
         int extractEnergy = next.extractEnergy(energyPerTick);
-        System.out.println("Offer in for " + furnace + ", extractEnergy=" + extractEnergy);
         used += extractEnergy;
       }
     }
 
     int addtlTicks = used / energyPerTick;
     if (addtlTicks > 0) {
-      if (remainingFuel + addtlTicks == 1) {
+      while (remainingFuel + addtlTicks <= 3) {
         addtlTicks++;
       }
       furnace.setField(0, remainingFuel + addtlTicks);
-      System.out.println("Offer in for " + furnace + ", remainingFuel=" + remainingFuel + " furnace.getField(0)=" + furnace.getField(0));
+      if (!wasBurning) {
+        BlockFurnace.setState(furnace.isBurning(), furnace.getWorld(), furnace.getPos());
+      }
+      furnace.markDirty();
     }
 
     return used;
