@@ -1,4 +1,6 @@
-package info.loenwind.mves;
+package info.loenwind.mves.api;
+
+import info.loenwind.mves.capability.IMvesCapability;
 
 import com.google.common.base.Supplier;
 

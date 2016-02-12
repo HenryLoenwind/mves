@@ -1,4 +1,4 @@
-package info.loenwind.mves.impl;
+package info.loenwind.mves.impl.simple;
 
 import java.util.EnumSet;
 
@@ -6,6 +6,14 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
+/**
+ * A simple energy transporter.
+ * <p>
+ * Not much to see here, all the juicy parts are in the base class.
+ * <p>
+ * BTW: Do you really want to implement a transporter without relay?
+ *
+ */
 public class SimpleEnergyTransporter extends SimpleEnergyTransporterBase {
 
   protected final World world;

@@ -1,25 +1,34 @@
 package info.loenwind.mves.impl.wire;
 
-import info.loenwind.mves.IEnergyAcceptor;
-import info.loenwind.mves.IEnergySupplier;
-import info.loenwind.mves.IEnergyTransporter;
-import info.loenwind.mves.IEnergyTransporterRelay;
 import info.loenwind.mves.MvesMod;
+import info.loenwind.mves.api.IEnergyTransporter;
+import info.loenwind.mves.api.IEnergyTransporterRelay;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 
+/**
+ * This is an example of an energy network. A very simple one with just one
+ * block, so it only does half of what a network need to do: It creates a map of
+ * all outside connections. A network that checks all its neighbors on every
+ * tick would be a nice source of lag. So it needs to map them when there's a
+ * change.
+ * <p>
+ * I bit-bang that information into a single int because Minecraft has a nice
+ * built-in way to send single ints from the server to the client. And because I
+ * can.
+ *
+ */
 public class WireConnections {
 
   protected static enum EnumConnection {
-    ACC(0b00000001),
-    SUP(0b00000010),
-    TRP(0b00000100),
-    BELOW(0b00001000),
-    ABOVE(0b00010000),
-    _ANY(0b00011111),
-    _ANY_LEVEL(0b00001111);
+    ACC(0b00000001), // adjacent block is an acceptor
+    SUP(0b00000010), // adjacent block is a supplier
+    TRP(0b00000100), // adjacent block is a transporter relay
+    BELOW(0b00001000), // adjacent block is air, block below that is wire
+    ABOVE(0b00010000), // block above us is air, block above the adjacent one is wire
+    _ANY(0b00011111); // there's any kind of connection (only used to query)
 
     private final int bitmask;
 
@@ -28,7 +37,7 @@ public class WireConnections {
     }
 
     protected int getBitmask(EnumFacing direction) {
-      // D-U-N-S-W-E
+      // EnumFacing is D-U-N-S-W-E, bitmask is E-W-S-N-D with 2 unused bits in the front
       if (direction == EnumFacing.DOWN) {
         return bitmask;
       } else if (direction == EnumFacing.UP) {
@@ -80,6 +89,7 @@ public class WireConnections {
     }
     if (worldIn.getBlockState(blockPosAboveTarget).getBlock() == BlockMvesWire.block && worldIn.isAirBlock(blockPosAboveUs)
         && worldIn.getBlockState(blockPosTarget).getBlock().isSideSolid(worldIn, blockPosTarget, direction.getOpposite())) {
+      // doesn't work in some cases, see https://github.com/MinecraftForge/MinecraftForge/issues/2451
       //        && worldIn.isSideSolid(blockPosTarget, direction.getOpposite(), false)) {
       set(direction, EnumConnection.ABOVE);
     }
@@ -92,18 +102,17 @@ public class WireConnections {
   private void findConnection(IBlockAccess world, BlockPos blockPosTarget, EnumFacing direction) {
     TileEntity tileEntity = world.getTileEntity(blockPosTarget);
     if (tileEntity != null && tileEntity.hasWorldObj()) {
-      IEnergySupplier energySupplier = tileEntity.getCapability(MvesMod.CAP_EnergySupplier, direction.getOpposite());
-      if (energySupplier != null) {
+      if (tileEntity.hasCapability(MvesMod.CAP_EnergySupplier, direction.getOpposite())) {
         set(direction, EnumConnection.SUP);
       }
-      IEnergyAcceptor energyAcceptor = tileEntity.getCapability(MvesMod.CAP_EnergyAcceptor, direction.getOpposite());
-      if (energyAcceptor != null) {
+      if (tileEntity.hasCapability(MvesMod.CAP_EnergyAcceptor, direction.getOpposite())) {
         set(direction, EnumConnection.ACC);
       }
       IEnergyTransporter energyTransporter = tileEntity.getCapability(MvesMod.CAP_EnergyTransporter, direction.getOpposite());
       if (energyTransporter instanceof IEnergyTransporterRelay) {
         set(direction, EnumConnection.TRP);
       }
+      // non-relays are useless to us. We cannot send them energy, so we neither try to nor render a connection to them. 
     }
   }
 

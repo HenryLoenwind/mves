@@ -21,11 +21,11 @@ public class GuiConfigFactory extends GuiConfig {
 
   private static List<IConfigElement> getConfigElements(GuiScreen parent) {
     List<IConfigElement> list = new ArrayList<IConfigElement>();
-    String prefix = "mves.config.";
+    String prefix = MvesMod.MODID + ".config.";
 
     for (Section section : Section.values()) {
       if (!section.sync || !ConfigHandler.configLockedByServer) {
-        list.add(new ConfigElement(ConfigHandler.configuration.getCategory(section.name).setLanguageKey(prefix)));
+        list.add(new ConfigElement(ConfigHandler.configuration.getCategory(section.name).setLanguageKey(prefix + section.name)));
       }
     }
 

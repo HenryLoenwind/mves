@@ -1,7 +1,7 @@
 package info.loenwind.mves.impl.furnace;
 
-import info.loenwind.mves.IEnergyStack;
-import info.loenwind.mves.IEnergySupplier;
+import info.loenwind.mves.api.IEnergyStack;
+import info.loenwind.mves.api.IEnergySupplier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntityFurnace;
 

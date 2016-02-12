@@ -1,4 +1,6 @@
-package info.loenwind.mves;
+package info.loenwind.mves.api;
+
+import info.loenwind.mves.capability.IMvesCapability;
 
 /**
  * Energy transporter is a block side capability that can be used by other

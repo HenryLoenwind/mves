@@ -1,6 +1,6 @@
 package info.loenwind.mves.impl.furnace;
 
-import info.loenwind.mves.IEnergyStack;
+import info.loenwind.mves.api.IEnergyStack;
 import info.loenwind.mves.config.Config;
 import net.minecraft.block.BlockFurnace;
 import net.minecraft.item.ItemStack;

@@ -1,4 +1,4 @@
-package info.loenwind.mves;
+package info.loenwind.mves.capability;
 
 public interface IMvesCapability {
 

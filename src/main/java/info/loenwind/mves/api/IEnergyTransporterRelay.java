@@ -1,4 +1,4 @@
-package info.loenwind.mves;
+package info.loenwind.mves.api;
 
 /**
  * Energy Transporter Relay is an interface that can be implemented by energy

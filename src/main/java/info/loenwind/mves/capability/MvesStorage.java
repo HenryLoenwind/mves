@@ -1,4 +1,4 @@
-package info.loenwind.mves;
+package info.loenwind.mves.capability;
 
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.EnumFacing;

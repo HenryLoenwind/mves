@@ -1,16 +1,30 @@
-package info.loenwind.mves.impl;
+package info.loenwind.mves.impl.simple;
 
-import info.loenwind.mves.IEnergyOffer;
-import info.loenwind.mves.IEnergyStack;
+import info.loenwind.mves.api.IEnergyOffer;
+import info.loenwind.mves.api.IEnergyStack;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * A simple energy offer.
+ * <p>
+ * It also supports manipulation of the limit. However, please refrain from
+ * manipulation the limit of offers that you don't own.
+ * <p>
+ * If you don't need to do funny things, use this. If you need to do funny
+ * things, have a look at the LossyEnergyOffer.
+ * <p>
+ * Note: This offer does not calculate the limit from its stacks. That's on
+ * purpose, so people don't even start to misuse the getLimit(). See
+ * WireEnergyTransporter for more info on this topic.
+ *
+ */
 public class SimpleEnergyOffer implements IEnergyOffer {
 
   private final List<IEnergyStack> stacks;
-  private Set<Object> seen = null;
+  private Set<Object> seen = null; // lazy field, it's only needed when relaying
   private int limit;
 
   public SimpleEnergyOffer(List<IEnergyStack> stacks) {

@@ -1,7 +1,7 @@
-package info.loenwind.mves.impl;
+package info.loenwind.mves.impl.simple;
 
-import info.loenwind.mves.IEnergyOffer;
-import info.loenwind.mves.IEnergyTransporterRelay;
+import info.loenwind.mves.api.IEnergyOffer;
+import info.loenwind.mves.api.IEnergyTransporterRelay;
 
 import java.util.EnumSet;
 
@@ -9,6 +9,12 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
+/**
+ * A simple energy transporter relay.
+ * <p>
+ * You'd probably want to subclass this, not use it as is.
+ *
+ */
 public class SimpleEnergyTransporterRelay extends SimpleEnergyTransporter implements IEnergyTransporterRelay {
 
   public SimpleEnergyTransporterRelay(World world, BlockPos blockPos) {

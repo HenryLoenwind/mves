@@ -29,6 +29,17 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+/**
+ * This is a simple energy wire that has been modeled to resemble redstone wire.
+ * <p>
+ * It uses a network-less implementation, and as such is not suited for long
+ * lines. This is reflected in high losses and a low capacity.
+ * <p>
+ * Most of this class deals with non-energy related stuff, but some of it can be
+ * used as an example of how to form a network if you look at the fact that it
+ * connects to other mvesWires up and down the side of blocks as networking.
+ *
+ */
 public class BlockMvesWire extends Block implements ITileEntityProvider {
 
   public static BlockMvesWire block;
@@ -66,13 +77,13 @@ public class BlockMvesWire extends Block implements ITileEntityProvider {
 
   public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
     TileEntity tileEntity = worldIn.getTileEntity(pos);
-    WireConnections connections = tileEntity instanceof TileMvesWire ? ((TileMvesWire) tileEntity).getConnections() : new WireConnections(0);
+    WireConnections connections = tileEntity instanceof TileMvesWire ? ((TileMvesWire) tileEntity).getConnections() : WireConnections.NONE;
     int count = 0;
     for (EnumFacing direction : EnumFacing.Plane.HORIZONTAL) {
       if (connections.is(direction, EnumConnection.ABOVE)) {
         state = state.withProperty(mapping[direction.ordinal()], EnumAttachPosition.UP);
         count++;
-      } else if (connections.is(direction, EnumConnection._ANY_LEVEL)) {
+      } else if (connections.is(direction, EnumConnection._ANY)) {
         state = state.withProperty(mapping[direction.ordinal()], EnumAttachPosition.SIDE);
         count++;
       }
@@ -167,7 +178,7 @@ public class BlockMvesWire extends Block implements ITileEntityProvider {
     if (playerIn.capabilities.isCreativeMode) {
       TileEntity tileEntity = worldIn.getTileEntity(pos);
       WireConnections connections = tileEntity instanceof TileMvesWire ? ((TileMvesWire) tileEntity).getConnections() : null;
-      playerIn.addChatMessage(new ChatComponentText(state.toString().replace("mves:mvesWire", "") + " " + connections
+      playerIn.addChatMessage(new ChatComponentText(state.toString().replace(MvesMod.MODID + ":" + BlockMvesWire.name(), "") + " " + connections
           + (worldIn.isRemote ? " on client" : " on server")));
       return true;
     } else {
@@ -180,6 +191,11 @@ public class BlockMvesWire extends Block implements ITileEntityProvider {
     return new TileMvesWire();
   }
 
+  /**
+   * This is called on client and server, with the caller being on the server.
+   * Nice way to sync data to the server without sending a whole chunk worth of
+   * tile entities.
+   */
   @Override
   public boolean onBlockEventReceived(World worldIn, BlockPos pos, IBlockState state, int eventID, int eventParam) {
     TileEntity tileEntity = worldIn.getTileEntity(pos);
@@ -189,6 +205,10 @@ public class BlockMvesWire extends Block implements ITileEntityProvider {
     return super.onBlockEventReceived(worldIn, pos, state, eventID, eventParam);
   }
 
+  /**
+   * Be careful in here, our neighbors' tile entities may not have world objects
+   * in them!
+   */
   @Override
   public void onNeighborBlockChange(World worldIn, BlockPos pos, IBlockState state, Block neighborBlock) {
     if (!worldIn.isRemote) {
@@ -201,6 +221,10 @@ public class BlockMvesWire extends Block implements ITileEntityProvider {
     }
   }
 
+  /**
+   * Be careful in here, our neighbors' tile entities may not have world objects
+   * in them!
+   */
   @Override
   public void onNeighborChange(IBlockAccess worldIn, BlockPos pos, BlockPos neighbor) {
     TileEntity tileEntity = worldIn.getTileEntity(pos);
@@ -209,6 +233,9 @@ public class BlockMvesWire extends Block implements ITileEntityProvider {
     }
   }
 
+  /**
+   * Should be called "onAfterBlockPlaced"...
+   */
   public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
     TileEntity tileEntity = worldIn.getTileEntity(pos);
     if (tileEntity instanceof TileMvesWire && !worldIn.isRemote) {
@@ -218,6 +245,9 @@ public class BlockMvesWire extends Block implements ITileEntityProvider {
     }
   }
 
+  /**
+   * This is only needed because we connect diagonally.
+   */
   private void notifyIndirectNeighbors(World worldIn, BlockPos pos, WireConnections connections) {
     for (EnumFacing direction : EnumFacing.Plane.HORIZONTAL) {
       if (connections.is(direction, EnumConnection.ABOVE)) {

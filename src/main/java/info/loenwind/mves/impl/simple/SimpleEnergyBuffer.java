@@ -1,5 +1,12 @@
-package info.loenwind.mves.impl;
+package info.loenwind.mves.impl.simple;
 
+/**
+ * A simple energy buffer that can store about twice as much energy than you'll
+ * ever need.
+ * <p>
+ * There are few reasons to roll your own, so just use this.
+ *
+ */
 public class SimpleEnergyBuffer {
 
   private final long maxAmount;

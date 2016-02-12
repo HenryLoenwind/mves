@@ -1,8 +1,8 @@
 package info.loenwind.mves.impl.wire;
 
-import info.loenwind.mves.IEnergyOffer;
-import info.loenwind.mves.IEnergyTransporterRelay;
 import info.loenwind.mves.MvesMod;
+import info.loenwind.mves.api.IEnergyOffer;
+import info.loenwind.mves.api.IEnergyTransporterRelay;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
@@ -61,7 +61,7 @@ public class TileMvesWire extends TileEntity implements ITickable {
           worldObj.addBlockEvent(getPos(), getBlockType(), _CONN, connections.getData());
         }
       } else {
-        // cont'd in setWorldObj()
+        // caller is readFromNBT(), so cont'd in setWorldObj()
       }
     }
   }

@@ -1,10 +1,10 @@
 package info.loenwind.mves.proxies;
 
-import info.loenwind.mves.IEnergyAcceptor;
-import info.loenwind.mves.IEnergySupplier;
-import info.loenwind.mves.IEnergyTransporter;
-import info.loenwind.mves.MvesDefaultImpl;
-import info.loenwind.mves.MvesStorage;
+import info.loenwind.mves.api.IEnergyAcceptor;
+import info.loenwind.mves.api.IEnergySupplier;
+import info.loenwind.mves.api.IEnergyTransporter;
+import info.loenwind.mves.capability.MvesDefaultImpl;
+import info.loenwind.mves.capability.MvesStorage;
 import info.loenwind.mves.config.Config;
 import info.loenwind.mves.impl.furnace.FurnaceCapabilityAttacher;
 import info.loenwind.mves.impl.wire.BlockMvesWire;
@@ -25,6 +25,7 @@ public class CommonProxy {
     CapabilityManager.INSTANCE.register(IEnergySupplier.class, new MvesStorage<IEnergySupplier>(), MvesDefaultImpl.class);
     CapabilityManager.INSTANCE.register(IEnergyTransporter.class, new MvesStorage<IEnergyTransporter>(), MvesDefaultImpl.class);
     CapabilityManager.INSTANCE.register(IEnergyAcceptor.class, new MvesStorage<IEnergyAcceptor>(), MvesDefaultImpl.class);
+
     if (Config.enableFurnaceHooking.getBoolean()) {
       MinecraftForge.EVENT_BUS.register(new FurnaceCapabilityAttacher());
     }

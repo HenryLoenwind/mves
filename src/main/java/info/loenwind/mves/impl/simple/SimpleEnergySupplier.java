@@ -1,7 +1,16 @@
-package info.loenwind.mves.impl;
+package info.loenwind.mves.impl.simple;
 
-import info.loenwind.mves.IEnergyStack;
-import info.loenwind.mves.IEnergySupplier;
+/**
+ * A simple energy supplier that is backed by a simple energy buffer.
+ * <p>
+ * No funny business here. Use this if you have a simple energy buffer and don't
+ * need to limit your energy output.
+ * <p>
+ * TODO: add limit
+ *
+ */
+import info.loenwind.mves.api.IEnergyStack;
+import info.loenwind.mves.api.IEnergySupplier;
 
 public class SimpleEnergySupplier implements IEnergySupplier {
 

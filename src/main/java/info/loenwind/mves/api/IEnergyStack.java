@@ -1,4 +1,4 @@
-package info.loenwind.mves;
+package info.loenwind.mves.api;
 
   /**
  * An energy stack represents a potential source of energy. It must be backed by

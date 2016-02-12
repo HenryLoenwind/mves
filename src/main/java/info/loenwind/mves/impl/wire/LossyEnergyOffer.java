@@ -1,11 +1,15 @@
 package info.loenwind.mves.impl.wire;
 
-import info.loenwind.mves.IEnergyOffer;
-import info.loenwind.mves.IEnergyStack;
+import info.loenwind.mves.api.IEnergyOffer;
+import info.loenwind.mves.api.IEnergyStack;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This is an example of wrapping an energy offer and its energy stacks.
+ *
+ */
 public class LossyEnergyOffer implements IEnergyOffer {
 
   private final IEnergyOffer parent;

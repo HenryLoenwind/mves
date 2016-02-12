@@ -1,8 +1,8 @@
 package info.loenwind.mves.impl.furnace;
 
-import info.loenwind.mves.IEnergyAcceptor;
-import info.loenwind.mves.IEnergyOffer;
-import info.loenwind.mves.IEnergyStack;
+import info.loenwind.mves.api.IEnergyAcceptor;
+import info.loenwind.mves.api.IEnergyOffer;
+import info.loenwind.mves.api.IEnergyStack;
 import info.loenwind.mves.config.Config;
 
 import java.util.Iterator;

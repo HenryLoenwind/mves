@@ -1,5 +1,6 @@
 package info.loenwind.mves.config;
 
+import info.loenwind.mves.MvesMod;
 import io.netty.buffer.ByteBuf;
 
 import java.nio.charset.Charset;
@@ -22,6 +23,8 @@ public enum Config {
   furnacePowerPerTickProduced(Section.DEMO, 40, "A furnace will produce this mich energy per tick", false, false),
   rainbowWireLosslessDistance(Section.DEMO, 3, "How many blocks of rainbow wire can energy travel without losses", false, false),
   rainbowWireLossPerBlock(Section.DEMO, 0.4, "How much energy rainbow wires will lose per piece of wire (0.0-1.0)", false, false),
+  rainbowWireCapacity(Section.DEMO, 120, "How much energy rainbow wires can transport. To be exact, how much one piece of it can extract "
+      + "from all blocks it is connected to together.", false, false),
   ;
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -97,6 +100,7 @@ public enum Config {
   private Property setPropertyData(final Property property) {
     property.setRequiresWorldRestart(requiresWorldRestart);
     property.setRequiresMcRestart(requiresGameRestart);
+    property.setLanguageKey(MvesMod.MODID + ".config." + name());
     return property;
   }
 

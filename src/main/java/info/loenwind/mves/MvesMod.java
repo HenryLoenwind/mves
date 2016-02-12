@@ -1,5 +1,8 @@
 package info.loenwind.mves;
 
+import info.loenwind.mves.api.IEnergyAcceptor;
+import info.loenwind.mves.api.IEnergySupplier;
+import info.loenwind.mves.api.IEnergyTransporter;
 import info.loenwind.mves.config.ConfigHandler;
 import info.loenwind.mves.proxies.CommonProxy;
 import net.minecraftforge.common.capabilities.Capability;
@@ -15,7 +18,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = MvesMod.MODID, version = MvesMod.VERSION, name = MvesMod.MODID)
+@Mod(modid = MvesMod.MODID, version = MvesMod.VERSION, name = MvesMod.MODID, guiFactory = "info.loenwind.mves.config.gui.ConfigFactory")
 public class MvesMod {
   public static final String MODID = "mves";
   public static final String VERSION = "1.0";
@@ -25,7 +28,7 @@ public class MvesMod {
 
   public static Logger LOG;
 
-  public static final SimpleNetworkWrapper NETWORK = NetworkRegistry.INSTANCE.newSimpleChannel(MvesMod.MODID);
+  public static SimpleNetworkWrapper NETWORK;
 
   @CapabilityInject(IEnergySupplier.class)
   public static final Capability<IEnergySupplier> CAP_EnergySupplier = null;
@@ -37,6 +40,7 @@ public class MvesMod {
   @EventHandler
   public void preinit(FMLPreInitializationEvent event) {
     LOG = event.getModLog();
+    NETWORK = NetworkRegistry.INSTANCE.newSimpleChannel(MvesMod.MODID);
     ConfigHandler.init(event);
     PROXY.init(event);
   }

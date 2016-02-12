@@ -20,6 +20,7 @@ public class ClientProxy extends CommonProxy {
   @Override
   public void init(FMLInitializationEvent e) {
     super.init(e);
+
     if (Config.enableRainbowWire.getBoolean()) {
       Minecraft.getMinecraft().getRenderItem().getItemModelMesher()
           .register(Item.getItemFromBlock(BlockMvesWire.block), 0, new ModelResourceLocation(MvesMod.MODID + ":" + BlockMvesWire.name(), "inventory"));

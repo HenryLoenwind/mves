@@ -1,4 +1,6 @@
-package info.loenwind.mves;
+package info.loenwind.mves.api;
+
+import info.loenwind.mves.capability.IMvesCapability;
 
 /**
  * Energy acceptor is the capability of a block’s side or an item to receive

@@ -1,11 +1,22 @@
-package info.loenwind.mves.impl;
+package info.loenwind.mves.impl.simple;
 
-import info.loenwind.mves.IEnergyAcceptor;
-import info.loenwind.mves.IEnergyOffer;
-import info.loenwind.mves.IEnergyStack;
+import info.loenwind.mves.api.IEnergyAcceptor;
+import info.loenwind.mves.api.IEnergyOffer;
+import info.loenwind.mves.api.IEnergyStack;
 
 import java.util.Iterator;
 
+/**
+ * A simple energy acceptor that takes as much as it can put into the
+ * SimpleEnergyBuffer it is connected to.
+ * <p>
+ * For most machines this is exactly what they need, so just use this class.
+ * <p>
+ * Machines that can switch between being a battery and being a generator can
+ * also use this class. They should use two instances and decide in
+ * getCapability() which one to hand out.
+ *
+ */
 public class SimpleEnergyAcceptor implements IEnergyAcceptor {
 
   private final SimpleEnergyBuffer buffer;

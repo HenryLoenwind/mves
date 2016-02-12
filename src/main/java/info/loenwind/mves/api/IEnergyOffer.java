@@ -1,4 +1,4 @@
-package info.loenwind.mves;
+package info.loenwind.mves.api;
 
 import java.util.List;
 

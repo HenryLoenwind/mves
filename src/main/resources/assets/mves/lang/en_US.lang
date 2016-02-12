@@ -1,1 +1,13 @@
 tile.mvesWire.name=Rainbow Wire
+mves.config.title=MVES Configuration
+mves.config.demo=Demo Functionality Options
+mves.config.visuals=Visual Options
+mves.config.development=Development Options
+mves.config.enableFurnaceHooking=Enable Furnace Hooking
+mves.config.enableRainbowWire=Enable Rainbow Wire
+mves.config.enableRainbowWireRecipe=Enable Rainbow Wire Recipe
+mves.config.furnacePowerPerTickConsumed=Furnace: Power per tick (consume)
+mves.config.furnacePowerPerTickProduced=Furnace: Power per tick (produce)
+mves.config.rainbowWireLosslessDistance=Rainbow Wire: Lossless Distance
+mves.config.rainbowWireLossPerBlock=Rainbow Wire: Loss per Block
+mves.config.rainbowWireCapacity=Rainbow Wire: Capacity
