@@ -19,7 +19,7 @@ public interface IEnergyStack {
    * the next time extractEnergy() is called on any energy stack (or energy is
    * extracted from anything by any other means).
    * 
-   * @return The amount of available energy. “0” is a valid return value.
+   * @return The amount of available energy. "0" is a valid return value.
    */
   int getStackSize();
 
