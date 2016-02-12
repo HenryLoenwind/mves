@@ -1,4 +1,4 @@
-package info.loenwind.mves.impl.furnace;
+package info.loenwind.mves.demo.furnace;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;

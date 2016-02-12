@@ -1,4 +1,4 @@
-package info.loenwind.mves.impl.simple;
+package info.loenwind.mves.api.simple;
 
 import info.loenwind.mves.api.IEnergyAcceptor;
 import info.loenwind.mves.api.IEnergyOffer;

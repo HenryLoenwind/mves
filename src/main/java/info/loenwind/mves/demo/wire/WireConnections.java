@@ -1,4 +1,4 @@
-package info.loenwind.mves.impl.wire;
+package info.loenwind.mves.demo.wire;
 
 import info.loenwind.mves.MvesMod;
 import info.loenwind.mves.api.IEnergyTransporter;

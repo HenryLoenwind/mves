@@ -1,4 +1,4 @@
-package info.loenwind.mves.impl.simple;
+package info.loenwind.mves.api.simple;
 
 import java.util.EnumSet;
 

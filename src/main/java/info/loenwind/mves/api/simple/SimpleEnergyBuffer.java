@@ -1,4 +1,4 @@
-package info.loenwind.mves.impl.simple;
+package info.loenwind.mves.api.simple;
 
 /**
  * A simple energy buffer that can store about twice as much energy than you'll

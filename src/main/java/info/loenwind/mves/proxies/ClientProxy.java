@@ -2,7 +2,7 @@ package info.loenwind.mves.proxies;
 
 import info.loenwind.mves.MvesMod;
 import info.loenwind.mves.config.Config;
-import info.loenwind.mves.impl.wire.BlockMvesWire;
+import info.loenwind.mves.demo.wire.BlockMvesWire;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;

@@ -1,4 +1,4 @@
-package info.loenwind.mves.impl.wire;
+package info.loenwind.mves.demo.wire;
 
 import info.loenwind.mves.api.IEnergyOffer;
 import info.loenwind.mves.api.IEnergyStack;

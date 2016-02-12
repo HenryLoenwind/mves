@@ -1,4 +1,4 @@
-package info.loenwind.mves.impl.simple;
+package info.loenwind.mves.api.simple;
 
 /**
  * A simple energy supplier that is backed by a simple energy buffer.

@@ -1,7 +1,7 @@
-package info.loenwind.mves.impl.wire;
+package info.loenwind.mves.demo.wire;
 
 import info.loenwind.mves.MvesMod;
-import info.loenwind.mves.impl.wire.WireConnections.EnumConnection;
+import info.loenwind.mves.demo.wire.WireConnections.EnumConnection;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;

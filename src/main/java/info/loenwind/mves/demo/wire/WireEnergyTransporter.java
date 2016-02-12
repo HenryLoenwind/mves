@@ -1,11 +1,11 @@
-package info.loenwind.mves.impl.wire;
+package info.loenwind.mves.demo.wire;
 
 import info.loenwind.mves.api.IEnergyOffer;
 import info.loenwind.mves.api.IEnergyStack;
 import info.loenwind.mves.api.IEnergyTransporterRelay;
+import info.loenwind.mves.api.simple.SimpleEnergyOffer;
+import info.loenwind.mves.api.simple.SimpleEnergyTransporter;
 import info.loenwind.mves.config.Config;
-import info.loenwind.mves.impl.simple.SimpleEnergyOffer;
-import info.loenwind.mves.impl.simple.SimpleEnergyTransporter;
 
 import java.util.EnumSet;
 import java.util.List;
