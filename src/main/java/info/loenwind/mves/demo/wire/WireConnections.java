@@ -101,7 +101,7 @@ public class WireConnections {
 
   private void findConnection(IBlockAccess world, BlockPos blockPosTarget, EnumFacing direction) {
     TileEntity tileEntity = world.getTileEntity(blockPosTarget);
-    if (tileEntity != null && tileEntity.hasWorldObj()) {
+    if (tileEntity != null && tileEntity.hasWorldObj() && tileEntity.hasCapability(MvesMod.CAP_EnergyHandler, direction.getOpposite())) {
       if (tileEntity.hasCapability(MvesMod.CAP_EnergySupplier, direction.getOpposite())) {
         set(direction, EnumConnection.SUP);
       }

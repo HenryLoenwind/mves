@@ -1,8 +1,5 @@
 package info.loenwind.mves.config;
 
-import static info.loenwind.mves.MvesMod.LOG;
-import static info.loenwind.mves.MvesMod.NETWORK;
-import info.loenwind.mves.MvesMod;
 import io.netty.buffer.ByteBuf;
 
 import java.io.File;
@@ -16,9 +13,18 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent.ClientDisconnectionFromServerEvent;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 
+import org.apache.logging.log4j.Logger;
+
 public class ConfigHandler {
+
+  private static final int ID = 0;
+
+  private final SimpleNetworkWrapper network;
+  private final String modid;
+  private final Logger log;
 
   static {
     loadAll();
@@ -26,34 +32,37 @@ public class ConfigHandler {
 
   //	****************************************************************************************
 
-  public static Configuration configuration;
-  public static File configDirectory;
-  public static boolean configLockedByServer = false;
+  public Configuration configuration;
+  public File configDirectory;
+  public boolean configLockedByServer = false;
 
-  public ConfigHandler() {
+  public ConfigHandler(String modid, Logger log, SimpleNetworkWrapper network) {
+    this.modid = modid;
+    this.log = log;
+    this.network = network;
   }
 
-  public static void init(FMLPreInitializationEvent event) {
-    NETWORK.registerMessage(PacketConfigSync.class, PacketConfigSync.class, PacketConfigSync.ID, Side.CLIENT);
-    MinecraftForge.EVENT_BUS.register(new ConfigHandler());
-    configDirectory = new File(event.getModConfigurationDirectory(), MvesMod.MODID.toLowerCase());
+  public void init(FMLPreInitializationEvent event) {
+    network.registerMessage(new HandleConfigSync(this), PacketConfigSync.class, ID, Side.CLIENT);
+    MinecraftForge.EVENT_BUS.register(this);
+    configDirectory = new File(event.getModConfigurationDirectory(), modid.toLowerCase());
     if (!configDirectory.exists()) {
       configDirectory.mkdir();
     }
 
-    File configFile = new File(configDirectory, MvesMod.MODID + ".cfg");
+    File configFile = new File(configDirectory, modid + ".cfg");
     configuration = new Configuration(configFile);
     syncConfig(false);
   }
 
-  private static void syncConfig(boolean load) {
+  private void syncConfig(boolean load) {
     try {
       if (load) {
         configuration.load();
       }
       processConfig();
     } catch (Exception e) {
-      LOG.error(MvesMod.MODID + " has a problem loading its configuration");
+      log.error(modid + " has a problem loading its configuration");
       e.printStackTrace();
     } finally {
       if (configuration.hasChanged()) {
@@ -65,13 +74,13 @@ public class ConfigHandler {
   @SuppressWarnings("static-method")
   @SubscribeEvent
   public void onConfigChanged(OnConfigChangedEvent event) {
-    if (event.modID.equals(MvesMod.MODID)) {
-      LOG.info("Updating config...");
+    if (event.modID.equals(modid)) {
+      log.info("Updating config...");
       syncConfig(false);
     }
   }
 
-  private static void processConfig() {
+  private void processConfig() {
     loadAll(configuration);
     if (configuration.hasChanged()) {
       configuration.save();
@@ -86,7 +95,7 @@ public class ConfigHandler {
     }
   }
 
-  public static void fromBytes(ByteBuf buf) {
+  public void fromBytes(ByteBuf buf) {
     if (MinecraftServer.getServer() != null && MinecraftServer.getServer().isServerRunning()) {
       return;
     }
@@ -101,7 +110,7 @@ public class ConfigHandler {
   @SuppressWarnings("static-method")
   @SubscribeEvent
   public void onPlayerLoggon(PlayerLoggedInEvent evt) {
-    NETWORK.sendTo(new PacketConfigSync(), (EntityPlayerMP) evt.player);
+    network.sendTo(new PacketConfigSync(), (EntityPlayerMP) evt.player);
   }
 
   @SuppressWarnings("static-method")

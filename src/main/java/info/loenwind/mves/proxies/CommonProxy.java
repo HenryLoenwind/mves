@@ -1,6 +1,7 @@
 package info.loenwind.mves.proxies;
 
 import info.loenwind.mves.api.IEnergyAcceptor;
+import info.loenwind.mves.api.IEnergyHandler;
 import info.loenwind.mves.api.IEnergySupplier;
 import info.loenwind.mves.api.IEnergyTransporter;
 import info.loenwind.mves.capability.MvesDefaultImpl;
@@ -22,6 +23,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 public class CommonProxy {
 
   public void init(FMLPreInitializationEvent e) {
+    CapabilityManager.INSTANCE.register(IEnergyHandler.class, new MvesStorage<IEnergyHandler>(), MvesDefaultImpl.class);
     CapabilityManager.INSTANCE.register(IEnergySupplier.class, new MvesStorage<IEnergySupplier>(), MvesDefaultImpl.class);
     CapabilityManager.INSTANCE.register(IEnergyTransporter.class, new MvesStorage<IEnergyTransporter>(), MvesDefaultImpl.class);
     CapabilityManager.INSTANCE.register(IEnergyAcceptor.class, new MvesStorage<IEnergyAcceptor>(), MvesDefaultImpl.class);
@@ -36,11 +38,11 @@ public class CommonProxy {
 
   public void init(FMLInitializationEvent e) {
     if (Config.enableRainbowWire.getBoolean() && Config.enableRainbowWireRecipe.getBoolean()) {
-      GameRegistry.addRecipe(new ItemStack(Item.getItemFromBlock(BlockMvesWire.block)), new Object[] { "345", "2x6", "1x7", 'x', Items.redstone, '1',
-          new ItemStack(Items.dye, 1, EnumDyeColor.RED.getDyeDamage()), '2', new ItemStack(Items.dye, 1, EnumDyeColor.ORANGE.getDyeDamage()), '3',
-          new ItemStack(Items.dye, 1, EnumDyeColor.YELLOW.getDyeDamage()), '4', new ItemStack(Items.dye, 1, EnumDyeColor.GREEN.getDyeDamage()), '5',
-          new ItemStack(Items.dye, 1, EnumDyeColor.CYAN.getDyeDamage()), '6', new ItemStack(Items.dye, 1, EnumDyeColor.BLUE.getDyeDamage()), '7',
-          new ItemStack(Items.dye, 1, EnumDyeColor.PURPLE.getDyeDamage()) });
+      GameRegistry.addRecipe(new ItemStack(Item.getItemFromBlock(BlockMvesWire.block)), "345", "2x6", "1x7", 'x', Items.redstone, '1', new ItemStack(Items.dye,
+          1, EnumDyeColor.RED.getDyeDamage()), '2', new ItemStack(Items.dye, 1, EnumDyeColor.ORANGE.getDyeDamage()), '3', new ItemStack(Items.dye, 1,
+          EnumDyeColor.YELLOW.getDyeDamage()), '4', new ItemStack(Items.dye, 1, EnumDyeColor.GREEN.getDyeDamage()), '5', new ItemStack(Items.dye, 1,
+          EnumDyeColor.CYAN.getDyeDamage()), '6', new ItemStack(Items.dye, 1, EnumDyeColor.BLUE.getDyeDamage()), '7', new ItemStack(Items.dye, 1,
+          EnumDyeColor.PURPLE.getDyeDamage()));
     }
   }
 

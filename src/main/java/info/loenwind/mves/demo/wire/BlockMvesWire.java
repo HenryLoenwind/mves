@@ -20,6 +20,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.MathHelper;
@@ -42,6 +43,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class BlockMvesWire extends Block implements ITileEntityProvider {
 
+  public static final int PARTICLES = 0x4441;
   public static BlockMvesWire block;
 
   public static String name() {
@@ -132,6 +134,24 @@ public class BlockMvesWire extends Block implements ITileEntityProvider {
   }
 
   @SideOnly(Side.CLIENT)
+  public void spawnParticles(World worldIn, BlockPos pos) {
+    double d0 = (double) pos.getX() + 0.5D + (Math.random() - 0.5D) * 0.5D;
+    double d1 = (double) ((float) pos.getY() + 0.0625F);
+    double d2 = (double) pos.getZ() + 0.5D + (Math.random() - 0.5D) * 0.5D;
+
+    int posY = pos.getY() + (Math.random() < .5 ? Math.random() < .33 ? 2 : 1 : 0);
+
+    float c0 = Math.abs((Math.abs(pos.getX()) % 160) - 80) / 80f;
+    float c1 = Math.abs((posY % 16) - 8) / 8f;
+    float c2 = Math.abs((Math.abs(pos.getZ()) % 80) - 40) / 40f;
+
+    float r = c0 * 0.25F + c1 * 0.10f + (1f - c2) * 0.25f + 0.4F;
+    float g = c0 * 0.10F + (1f - c1) * 0.30f + c2 * 0.20f + 0.4F;
+    float b = (1f - c0) * 0.10F + c1 * 0.10f + c2 * 0.40f + 0.4F;
+    worldIn.spawnParticle(EnumParticleTypes.REDSTONE, d0, d1, d2, (double) r, (double) g, (double) b, new int[0]);
+  }
+
+  @SideOnly(Side.CLIENT)
   public EnumWorldBlockLayer getBlockLayer() {
     return EnumWorldBlockLayer.CUTOUT;
   }
@@ -198,11 +218,17 @@ public class BlockMvesWire extends Block implements ITileEntityProvider {
    */
   @Override
   public boolean onBlockEventReceived(World worldIn, BlockPos pos, IBlockState state, int eventID, int eventParam) {
-    TileEntity tileEntity = worldIn.getTileEntity(pos);
-    if (tileEntity instanceof TileMvesWire) {
-      return tileEntity.receiveClientEvent(eventID, eventParam);
+    if (worldIn.isRemote) {
+      if (eventID == PARTICLES) {
+        spawnParticles(worldIn, pos);
+        return true;
+      }
+      TileEntity tileEntity = worldIn.getTileEntity(pos);
+      if (tileEntity instanceof TileMvesWire) {
+        return tileEntity.receiveClientEvent(eventID, eventParam);
+      }
     }
-    return super.onBlockEventReceived(worldIn, pos, state, eventID, eventParam);
+    return false;
   }
 
   /**

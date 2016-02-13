@@ -1,6 +1,7 @@
 package info.loenwind.mves.demo.wire;
 
 import info.loenwind.mves.MvesMod;
+import info.loenwind.mves.api.IEnergyHandler;
 import info.loenwind.mves.api.IEnergyOffer;
 import info.loenwind.mves.api.IEnergyTransporterRelay;
 import net.minecraft.nbt.NBTTagCompound;
@@ -19,6 +20,7 @@ public class TileMvesWire extends TileEntity implements ITickable {
   private WireConnections connections = WireConnections.NONE;
   private WireEnergyTransporter transporter = null;
 
+  private static final IEnergyHandler HANDLER = new WireEnergyHandler();
   private static final IEnergyTransporterRelay NULL_RELAY = new IEnergyTransporterRelay() {
     @Override
     public int relayEnergy(IEnergyOffer offer) {
@@ -32,13 +34,17 @@ public class TileMvesWire extends TileEntity implements ITickable {
 
   @Override
   public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-    return (!worldObj.isRemote && capability == MvesMod.CAP_EnergyTransporter) || super.hasCapability(capability, facing);
+    return (!worldObj.isRemote && (capability == MvesMod.CAP_EnergyTransporter || capability == MvesMod.CAP_EnergyHandler)) || super.hasCapability(capability, facing);
   }
 
   @Override
   public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-    if (!worldObj.isRemote && capability == MvesMod.CAP_EnergyTransporter) {
-      return (T) (transporter != null ? transporter : NULL_RELAY);
+    if (!worldObj.isRemote) {
+      if (capability == MvesMod.CAP_EnergyTransporter) {
+        return (T) (transporter != null ? transporter : NULL_RELAY);
+      } else if (capability == MvesMod.CAP_EnergyHandler) {
+        return (T) HANDLER;
+      }
     }
     return super.getCapability(capability, facing);
   }
@@ -101,7 +107,7 @@ public class TileMvesWire extends TileEntity implements ITickable {
       }
       return true;
     }
-    return super.receiveClientEvent(id, type);
+    return false;
   }
 
   @Override

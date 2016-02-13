@@ -10,6 +10,7 @@ import info.loenwind.mves.config.Config;
 import java.util.EnumSet;
 import java.util.List;
 
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
@@ -55,7 +56,18 @@ public class WireEnergyTransporter extends SimpleEnergyTransporter implements IE
     }
   }
 
+  private int lastTick = -1;
+
   protected int push(World world, BlockPos blockPos, EnumSet<EnumFacing> directions, IEnergyOffer offer) {
+    int pushed = push2(world, blockPos, directions, offer);
+    if (pushed > 0 && lastTick < MinecraftServer.getServer().getTickCounter()) {
+      lastTick = MinecraftServer.getServer().getTickCounter() + 5;
+      world.addBlockEvent(blockPos, BlockMvesWire.block, BlockMvesWire.PARTICLES, 0);
+    }
+    return pushed;
+  }
+
+  protected int push2(World world, BlockPos blockPos, EnumSet<EnumFacing> directions, IEnergyOffer offer) {
     int result = 0;
     // acceptors first, then relays!
     for (EnumFacing direction : directions) {

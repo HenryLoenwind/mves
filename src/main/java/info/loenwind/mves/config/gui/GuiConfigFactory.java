@@ -15,6 +15,8 @@ import net.minecraftforge.fml.client.config.IConfigElement;
 
 public class GuiConfigFactory extends GuiConfig {
 
+  public static ConfigHandler CONFIGHANDLER;
+
   public GuiConfigFactory(GuiScreen parentScreen) {
     super(parentScreen, getConfigElements(parentScreen), MvesMod.MODID, false, false, StatCollector.translateToLocal("mves.config.title"));
   }
@@ -24,8 +26,8 @@ public class GuiConfigFactory extends GuiConfig {
     String prefix = MvesMod.MODID + ".config.";
 
     for (Section section : Section.values()) {
-      if (!section.sync || !ConfigHandler.configLockedByServer) {
-        list.add(new ConfigElement(ConfigHandler.configuration.getCategory(section.name).setLanguageKey(prefix + section.name)));
+      if (!section.sync || !CONFIGHANDLER.configLockedByServer) {
+        list.add(new ConfigElement(CONFIGHANDLER.configuration.getCategory(section.name).setLanguageKey(prefix + section.name)));
       }
     }
 
