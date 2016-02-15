@@ -215,18 +215,21 @@ public class BlockMvesWire extends Block implements ITileEntityProvider {
    * This is called on client and server, with the caller being on the server.
    * Nice way to sync data to the server without sending a whole chunk worth of
    * tile entities.
+   * <p>
+   * Note that the server must return true from this for the message to be sent
+   * to the client.
    */
   @Override
   public boolean onBlockEventReceived(World worldIn, BlockPos pos, IBlockState state, int eventID, int eventParam) {
-    if (worldIn.isRemote) {
-      if (eventID == PARTICLES) {
+    if (eventID == PARTICLES) {
+      if (worldIn.isRemote) {
         spawnParticles(worldIn, pos);
-        return true;
       }
-      TileEntity tileEntity = worldIn.getTileEntity(pos);
-      if (tileEntity instanceof TileMvesWire) {
-        return tileEntity.receiveClientEvent(eventID, eventParam);
-      }
+      return true;
+    }
+    TileEntity tileEntity = worldIn.getTileEntity(pos);
+    if (tileEntity instanceof TileMvesWire) {
+      return tileEntity.receiveClientEvent(eventID, eventParam);
     }
     return false;
   }
