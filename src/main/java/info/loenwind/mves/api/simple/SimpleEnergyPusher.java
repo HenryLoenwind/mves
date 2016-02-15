@@ -61,4 +61,8 @@ public class SimpleEnergyPusher extends SimpleEnergyTransporterBase {
     return 0;
   }
 
+  @Override
+  protected void explode(BlockPos offendingBlock, EnumFacing offendingDirection) {
+  }
+
 }

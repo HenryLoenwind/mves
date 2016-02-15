@@ -40,4 +40,10 @@ public class SimpleEnergyTransporter extends SimpleEnergyTransporterBase {
     return transport(world, blockPos, directionsIn, directionsOut);
   }
 
+  @Override
+  protected void explode(BlockPos offendingBlock, EnumFacing offendingDirection) {
+    world.getBlockState(blockPos).getBlock().dropBlockAsItem(world, blockPos, world.getBlockState(blockPos), 0);
+    world.setBlockToAir(blockPos);
+  }
+
 }

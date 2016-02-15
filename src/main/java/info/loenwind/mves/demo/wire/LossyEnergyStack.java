@@ -40,7 +40,10 @@ public class LossyEnergyStack implements IEnergyStack {
     int ourEnergy = getStackSize();
     int parentEnergy = parent.getStackSize();
     int toDeliver = Math.min(amount, ourEnergy);
-    if (toDeliver == ourEnergy) {
+    if (ourEnergy == parentEnergy) {
+      // lossless
+      return parent.extractEnergy(toDeliver);
+    } else if (toDeliver == ourEnergy) {
       // shortcut for "everything"
       int extracted = parent.extractEnergy(parentEnergy);
       if (extracted == parentEnergy) {

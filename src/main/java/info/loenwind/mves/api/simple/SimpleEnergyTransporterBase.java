@@ -139,6 +139,7 @@ public abstract class SimpleEnergyTransporterBase implements IEnergyTransporter 
    * <li>That there is a tile entity
    * <li>That the tile entity has a world object
    * <li>That it provides an energy acceptor on the given side
+   * <li>That the acceptor doesn't take more energy than as offered
    * </ul>
    */
   protected int offerToAcceptor(World world, BlockPos blockPos, EnumFacing direction, IEnergyOffer offer) {
@@ -147,7 +148,11 @@ public abstract class SimpleEnergyTransporterBase implements IEnergyTransporter 
       if (tileEntity != null && tileEntity.hasWorldObj()) {
         IEnergyAcceptor energyAcceptor = tileEntity.getCapability(MvesMod.CAP_EnergyAcceptor, direction);
         if (energyAcceptor != null) {
-          return energyAcceptor.offerEnergy(offer);
+          int taken = energyAcceptor.offerEnergy(offer);
+          if (taken > offer.getLimit()) {
+            explode(blockPos, direction);
+          }
+          return taken;
         }
       }
     }
@@ -167,6 +172,7 @@ public abstract class SimpleEnergyTransporterBase implements IEnergyTransporter 
    * <li>That there is a tile entity
    * <li>That the tile entity has a world object
    * <li>That it provides an energy relay on the given side
+   * <li>That the relay doesn't take more energy than as offered
    * </ul>
    */
   protected int offerToRelay(World world, BlockPos blockPos, EnumFacing direction, IEnergyOffer offer) {
@@ -175,11 +181,21 @@ public abstract class SimpleEnergyTransporterBase implements IEnergyTransporter 
       if (tileEntity != null && tileEntity.hasWorldObj()) {
         IEnergyTransporter energyTransporter = tileEntity.getCapability(MvesMod.CAP_EnergyTransporter, direction);
         if (energyTransporter instanceof IEnergyTransporterRelay) {
-          return ((IEnergyTransporterRelay) energyTransporter).relayEnergy(offer);
+          int taken = ((IEnergyTransporterRelay) energyTransporter).relayEnergy(offer);
+          if (taken > offer.getLimit()) {
+            explode(blockPos, direction);
+          }
+          return taken;
         }
       }
     }
     return 0;
   }
+
+  /**
+   * This is called when an acceptor or relay takes more energy than it was
+   * offered.
+   */
+  protected abstract void explode(BlockPos offendingBlock, EnumFacing offendingDirection);
 
 }
