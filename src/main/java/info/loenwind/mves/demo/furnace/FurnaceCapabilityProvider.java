@@ -99,6 +99,10 @@ public class FurnaceCapabilityProvider implements ICapabilityProvider, IEnergyHa
       return 0;
     }
     int energyPerTick = Config.furnacePowerPerTickConsumed.getInt();
+    int offerMax = offer.getLimit();
+    if (energyPerTick > offerMax) {
+      return 0;
+    }
     boolean wasBurning = furnace.isBurning();
     int remainingFuel = furnace.getField(furnaceBurnTime_field);
     int cookTime = furnace.getField(cookTime_field);
@@ -109,6 +113,12 @@ public class FurnaceCapabilityProvider implements ICapabilityProvider, IEnergyHa
       return 0;
     }
     int maxEnergy = maxTicks * energyPerTick;
+    while (maxEnergy > offerMax) {
+      maxEnergy -= energyPerTick;
+      if (maxEnergy <= 0) {
+        return 0;
+      }
+    }
 
     int used = 0;
     Iterator<IEnergyStack> iterator = offer.getStacks().iterator();

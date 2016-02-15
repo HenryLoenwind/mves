@@ -93,6 +93,7 @@ publishing {
     tasks.publish.dependsOn 'build'
     publications {
         mavenJava(MavenPublication) {
+            artifactId 'MVES'
             from components.java
 
             artifact sourceJar
@@ -103,6 +104,8 @@ publishing {
     repositories {
         if (project.hasProperty('mavendir')) {
             maven { url mavendir }
+        } else {
+            mavenLocal()
         }
     }
 }

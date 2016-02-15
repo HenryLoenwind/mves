@@ -150,6 +150,7 @@ public abstract class SimpleEnergyTransporterBase implements IEnergyTransporter 
         if (energyAcceptor != null) {
           int taken = energyAcceptor.offerEnergy(offer);
           if (taken > offer.getLimit()) {
+            MvesMod.LOG.warn("Block at " + blockPos + " was offered " + offer.getLimit() + " but it took " + taken);
             explode(blockPos, direction);
           }
           return taken;
