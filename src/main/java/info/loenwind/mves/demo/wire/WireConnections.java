@@ -1,8 +1,6 @@
 package info.loenwind.mves.demo.wire;
 
 import info.loenwind.mves.MvesMod;
-import info.loenwind.mves.api.IEnergyTransporter;
-import info.loenwind.mves.api.IEnergyTransporterRelay;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
@@ -108,11 +106,9 @@ public class WireConnections {
       if (tileEntity.hasCapability(MvesMod.CAP_EnergyAcceptor, direction.getOpposite())) {
         set(direction, EnumConnection.ACC);
       }
-      IEnergyTransporter energyTransporter = tileEntity.getCapability(MvesMod.CAP_EnergyTransporter, direction.getOpposite());
-      if (energyTransporter instanceof IEnergyTransporterRelay) {
+      if (tileEntity.hasCapability(MvesMod.CAP_EnergyTransporter, direction.getOpposite())) {
         set(direction, EnumConnection.TRP);
       }
-      // non-relays are useless to us. We cannot send them energy, so we neither try to nor render a connection to them. 
     }
   }
 

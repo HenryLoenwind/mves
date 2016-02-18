@@ -50,4 +50,9 @@ public final class MvesDefaultImpl implements IEnergyAcceptor, IEnergySupplier, 
     return null;
   }
 
+  @Override
+  public int relayEnergy(IEnergyOffer offer) {
+    return 0;
+  }
+
 }

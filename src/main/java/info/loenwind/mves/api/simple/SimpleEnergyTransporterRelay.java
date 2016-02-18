@@ -1,7 +1,6 @@
 package info.loenwind.mves.api.simple;
 
 import info.loenwind.mves.api.IEnergyOffer;
-import info.loenwind.mves.api.IEnergyTransporterRelay;
 
 import java.util.EnumSet;
 
@@ -15,7 +14,7 @@ import net.minecraft.world.World;
  * You'd probably want to subclass this, not use it as is.
  *
  */
-public class SimpleEnergyTransporterRelay extends SimpleEnergyTransporter implements IEnergyTransporterRelay {
+public class SimpleEnergyTransporterRelay extends SimpleEnergyTransporter {
 
   public SimpleEnergyTransporterRelay(World world, BlockPos blockPos) {
     super(world, blockPos, EnumSet.allOf(EnumFacing.class));

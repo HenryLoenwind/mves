@@ -2,7 +2,6 @@ package info.loenwind.mves.demo.wire;
 
 import info.loenwind.mves.api.IEnergyOffer;
 import info.loenwind.mves.api.IEnergyStack;
-import info.loenwind.mves.api.IEnergyTransporterRelay;
 import info.loenwind.mves.api.simple.SimpleEnergyOffer;
 import info.loenwind.mves.api.simple.SimpleEnergyTransporter;
 import info.loenwind.mves.config.Config;
@@ -24,7 +23,7 @@ import net.minecraft.world.World;
  * already is low enough so you don't need to wrap it.
  *
  */
-public class WireEnergyTransporter extends SimpleEnergyTransporter implements IEnergyTransporterRelay {
+public class WireEnergyTransporter extends SimpleEnergyTransporter {
 
   private final WireConnections connections;
 

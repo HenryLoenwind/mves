@@ -6,7 +6,6 @@ import info.loenwind.mves.api.IEnergyOffer;
 import info.loenwind.mves.api.IEnergyStack;
 import info.loenwind.mves.api.IEnergySupplier;
 import info.loenwind.mves.api.IEnergyTransporter;
-import info.loenwind.mves.api.IEnergyTransporterRelay;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -145,7 +144,7 @@ public abstract class SimpleEnergyTransporterBase implements IEnergyTransporter 
   protected int offerToAcceptor(World world, BlockPos blockPos, EnumFacing direction, IEnergyOffer offer) {
     if (world.isBlockLoaded(blockPos, false)) {
       TileEntity tileEntity = world.getTileEntity(blockPos);
-      if (tileEntity != null && tileEntity.hasWorldObj()) {
+      if (tileEntity != null && tileEntity.hasWorldObj() && tileEntity.hasCapability(MvesMod.CAP_EnergyAcceptor, direction)) {
         IEnergyAcceptor energyAcceptor = tileEntity.getCapability(MvesMod.CAP_EnergyAcceptor, direction);
         if (energyAcceptor != null) {
           int taken = energyAcceptor.offerEnergy(offer);
@@ -179,10 +178,10 @@ public abstract class SimpleEnergyTransporterBase implements IEnergyTransporter 
   protected int offerToRelay(World world, BlockPos blockPos, EnumFacing direction, IEnergyOffer offer) {
     if (world.isBlockLoaded(blockPos, false)) {
       TileEntity tileEntity = world.getTileEntity(blockPos);
-      if (tileEntity != null && tileEntity.hasWorldObj()) {
+      if (tileEntity != null && tileEntity.hasWorldObj() && tileEntity.hasCapability(MvesMod.CAP_EnergyTransporter, direction)) {
         IEnergyTransporter energyTransporter = tileEntity.getCapability(MvesMod.CAP_EnergyTransporter, direction);
-        if (energyTransporter instanceof IEnergyTransporterRelay) {
-          int taken = ((IEnergyTransporterRelay) energyTransporter).relayEnergy(offer);
+        if (energyTransporter != null) {
+          int taken = energyTransporter.relayEnergy(offer);
           if (taken > offer.getLimit()) {
             explode(blockPos, direction);
           }
@@ -198,5 +197,10 @@ public abstract class SimpleEnergyTransporterBase implements IEnergyTransporter 
    * offered.
    */
   protected abstract void explode(BlockPos offendingBlock, EnumFacing offendingDirection);
+
+  @Override
+  public int relayEnergy(IEnergyOffer offer) {
+    return 0;
+  }
 
 }

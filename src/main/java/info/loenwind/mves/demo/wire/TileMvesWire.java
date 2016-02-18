@@ -3,7 +3,7 @@ package info.loenwind.mves.demo.wire;
 import info.loenwind.mves.MvesMod;
 import info.loenwind.mves.api.IEnergyHandler;
 import info.loenwind.mves.api.IEnergyOffer;
-import info.loenwind.mves.api.IEnergyTransporterRelay;
+import info.loenwind.mves.api.IEnergyTransporter;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
@@ -21,7 +21,7 @@ public class TileMvesWire extends TileEntity implements ITickable {
   private WireEnergyTransporter transporter = null;
 
   private static final IEnergyHandler HANDLER = new WireEnergyHandler();
-  private static final IEnergyTransporterRelay NULL_RELAY = new IEnergyTransporterRelay() {
+  private static final IEnergyTransporter NULL_RELAY = new IEnergyTransporter() {
     @Override
     public int relayEnergy(IEnergyOffer offer) {
       return 0;
