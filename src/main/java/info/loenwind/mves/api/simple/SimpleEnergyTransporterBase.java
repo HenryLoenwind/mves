@@ -85,7 +85,7 @@ public abstract class SimpleEnergyTransporterBase implements IEnergyTransporter 
    * <li>That the tile entity has a world object
    * <li>That it provides an energy supplier on the given side
    * <li>That an energy offer is returned
-   * <li>That is contains energy
+   * <li>That it contains energy
    * </ul>
    */
   protected IEnergyStack collectFromSupplier(World world, BlockPos blockPos, EnumFacing direction) {

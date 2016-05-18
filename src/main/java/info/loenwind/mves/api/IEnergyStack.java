@@ -24,9 +24,9 @@ public interface IEnergyStack {
   int getStackSize();
 
   /**
-   * Tries to extracts the given amount of energy.
+   * Tries to extract the given amount of energy.
    * 
-   * @param amount
+   * @param amount The amount that should be extracted.
    * @return The amount that was actually extracted.
    */
   int extractEnergy(int amount);

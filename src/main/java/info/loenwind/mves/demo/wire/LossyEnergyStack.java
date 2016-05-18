@@ -6,7 +6,7 @@ import info.loenwind.mves.config.Config;
 /**
  * This is an example of wrapping energy stacks.
  * <p>
- * It simulated an energy loss that starts after a certain amount of blocks,
+ * It simulates an energy loss that starts after a certain amount of blocks,
  * which is determined by repeated wrapping.
  *
  */

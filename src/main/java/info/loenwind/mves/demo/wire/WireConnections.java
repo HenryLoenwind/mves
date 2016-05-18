@@ -8,7 +8,7 @@ import net.minecraft.world.IBlockAccess;
 
 /**
  * This is an example of an energy network. A very simple one with just one
- * block, so it only does half of what a network need to do: It creates a map of
+ * block, so it only does half of what a network needs to do: It creates a map of
  * all outside connections. A network that checks all its neighbors on every
  * tick would be a nice source of lag. So it needs to map them when there's a
  * change.

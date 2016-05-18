@@ -13,7 +13,7 @@ import com.google.common.base.Supplier;
 public interface IEnergySupplier extends IMvesCapability, Supplier<IEnergyStack> {
 
   /**
-   * Get an representation of this suppliers available energy.
+   * Get an representation of this supplier's available energy.
    * <p>
    * For tile entities: This method may only be called once per block side and
    * tick, and only by the adjacent block (or its network) during its tick.
