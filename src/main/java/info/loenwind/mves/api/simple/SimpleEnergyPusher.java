@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
@@ -52,7 +52,8 @@ public class SimpleEnergyPusher extends SimpleEnergyTransporterBase {
     }
     long max = buffer.getAmount();
     int maxi = Math.min(limit, (int) (max > Integer.MAX_VALUE ? Integer.MAX_VALUE : max));
-    IEnergyOffer offer = new SimpleEnergyOffer((List) Collections.singletonList(new SimpleEnergyStack(buffer, isBattery)), maxi);
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	IEnergyOffer offer = new SimpleEnergyOffer((List) Collections.singletonList(new SimpleEnergyStack(buffer, isBattery)), maxi);
     return push(world, blockPos, directions, offer);
   }
 

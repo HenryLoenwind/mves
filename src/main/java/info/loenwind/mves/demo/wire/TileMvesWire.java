@@ -7,7 +7,7 @@ import info.loenwind.mves.api.IEnergyTransporter;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
@@ -37,6 +37,7 @@ public class TileMvesWire extends TileEntity implements ITickable {
     return (!worldObj.isRemote && (capability == MvesMod.CAP_EnergyTransporter || capability == MvesMod.CAP_EnergyHandler)) || super.hasCapability(capability, facing);
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
     if (!worldObj.isRemote) {
@@ -93,10 +94,10 @@ public class TileMvesWire extends TileEntity implements ITickable {
   }
 
   @Override
-  public Packet getDescriptionPacket() {
+  public Packet<?> getDescriptionPacket() {
     NBTTagCompound compound = new NBTTagCompound();
     compound.setInteger("conn", connections.getData());
-    return new S35PacketUpdateTileEntity(getPos(), getBlockMetadata(), compound);
+    return new SPacketUpdateTileEntity(getPos(), getBlockMetadata(), compound);
   }
 
   @Override
@@ -111,7 +112,7 @@ public class TileMvesWire extends TileEntity implements ITickable {
   }
 
   @Override
-  public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
+  public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
     setConnections(new WireConnections(pkt.getNbtCompound().getInteger("conn")));
   }
 

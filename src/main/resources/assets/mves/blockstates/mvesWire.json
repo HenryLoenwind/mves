@@ -2,9 +2,9 @@
     "forge_marker": 1,
     "defaults": {
         "textures": {
-            "particle": "blocks/redstone_dust_cross",
-            "cross": "blocks/redstone_dust_cross",
-            "line": "blocks/redstone_dust_line"
+            "particle": "blocks/redstone_dust_dot",
+            "cross": "blocks/redstone_dust_dot",
+            "line": "blocks/redstone_dust_line0"
         }
     },
     "variants": {

@@ -153,6 +153,7 @@ public enum Config {
   //
 
   private class DataTypeErrorInConfigException extends RuntimeException {
+	private static final long serialVersionUID = 1L;
   }
 
   public int getDefaultInt() {

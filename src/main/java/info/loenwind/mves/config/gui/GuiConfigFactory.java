@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.fml.client.config.GuiConfig;
 import net.minecraftforge.fml.client.config.IConfigElement;
@@ -18,7 +18,7 @@ public class GuiConfigFactory extends GuiConfig {
   public static ConfigHandler CONFIGHANDLER;
 
   public GuiConfigFactory(GuiScreen parentScreen) {
-    super(parentScreen, getConfigElements(parentScreen), MvesMod.MODID, false, false, StatCollector.translateToLocal("mves.config.title"));
+    super(parentScreen, getConfigElements(parentScreen), MvesMod.MODID, false, false, I18n.translateToLocal("mves.config.title"));
   }
 
   private static List<IConfigElement> getConfigElements(GuiScreen parent) {

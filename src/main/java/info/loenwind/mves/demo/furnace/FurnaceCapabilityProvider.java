@@ -14,7 +14,6 @@ import java.util.Iterator;
 
 import net.minecraft.block.BlockFurnace;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;
@@ -51,6 +50,7 @@ public class FurnaceCapabilityProvider implements ICapabilityProvider, IEnergyHa
         && (capability == MvesMod.CAP_EnergySupplier || capability == MvesMod.CAP_EnergyAcceptor || capability == MvesMod.CAP_EnergyHandler);
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
     return hasCapability(capability, facing) ? (T) this : null;
@@ -149,11 +149,11 @@ public class FurnaceCapabilityProvider implements ICapabilityProvider, IEnergyHa
   // SUPPLIER
   /////////////////////////////////////////////////////////////////////////
 
-  private int lastTick = -1;
+  private long lastTick = -1;
 
   @Override
   public IEnergyStack get() {
-    return lastTick == MinecraftServer.getServer().getTickCounter() || isSmelting() || (!furnace.isBurning() && !isIgnitable()) ? null : this;
+    return lastTick == furnace.getWorld().getTotalWorldTime() || isSmelting() || (!furnace.isBurning() && !isIgnitable()) ? null : this;
   }
 
   /////////////////////////////////////////////////////////////////////////
@@ -162,15 +162,15 @@ public class FurnaceCapabilityProvider implements ICapabilityProvider, IEnergyHa
 
   @Override
   public int getStackSize() {
-    return lastTick == MinecraftServer.getServer().getTickCounter() ? 0 : Config.furnacePowerPerTickProduced.getInt();
+    return lastTick == furnace.getWorld().getTotalWorldTime() ? 0 : Config.furnacePowerPerTickProduced.getInt();
   }
 
   @Override
   public int extractEnergy(int amount) {
-    if (lastTick == MinecraftServer.getServer().getTickCounter() || (!furnace.isBurning() && !ignite())) {
+    if (lastTick == furnace.getWorld().getTotalWorldTime() || (!furnace.isBurning() && !ignite())) {
       return 0;
     } else {
-      lastTick = MinecraftServer.getServer().getTickCounter();
+      lastTick = furnace.getWorld().getTotalWorldTime();
       return Config.furnacePowerPerTickProduced.getInt();
     }
   }
@@ -194,12 +194,12 @@ public class FurnaceCapabilityProvider implements ICapabilityProvider, IEnergyHa
   }
 
   private boolean isIgnitable() {
-    return furnace.getItemBurnTime(furnace.getStackInSlot(fuel_slot)) > 0;
+    return TileEntityFurnace.getItemBurnTime(furnace.getStackInSlot(fuel_slot)) > 0;
   }
 
   private boolean ignite() {
     ItemStack stackInSlot = furnace.getStackInSlot(fuel_slot);
-    int burnTime = furnace.getItemBurnTime(stackInSlot);
+    int burnTime = TileEntityFurnace.getItemBurnTime(stackInSlot);
     if (burnTime > 0) {
       furnace.setField(currentItemBurnTime_field, burnTime);
       furnace.setField(furnaceBurnTime_field, burnTime - 1);

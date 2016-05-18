@@ -4,26 +4,30 @@ import info.loenwind.mves.MvesMod;
 import info.loenwind.mves.demo.wire.WireConnections.EnumConnection;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraft.util.IStringSerializable;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -41,17 +45,23 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * connects to other mvesWires up and down the side of blocks as networking.
  *
  */
-public class BlockMvesWire extends Block implements ITileEntityProvider {
+public class BlockMvesWire extends Block implements ITileEntityProvider, IBlockColor {
 
   public static final int PARTICLES = 0x4441;
   public static BlockMvesWire block;
+  public static ItemBlock item;
 
   public static String name() {
     return "mvesWire";
   }
 
   public static void create() {
-    GameRegistry.registerBlock(block = new BlockMvesWire(), name());
+    block = new BlockMvesWire();
+    block.setRegistryName(name());
+    GameRegistry.register(block);
+    item = new ItemBlock(block);
+    item.setRegistryName(name());
+    GameRegistry.register(item);
     GameRegistry.registerTileEntity(TileMvesWire.class, MvesMod.MODID + "_" + name() + "_te");
   }
 
@@ -61,22 +71,30 @@ public class BlockMvesWire extends Block implements ITileEntityProvider {
   public static final PropertyEnum<EnumAttachPosition> WEST = PropertyEnum.<EnumAttachPosition> create("west", EnumAttachPosition.class);
   public static final PropertyBool DOWN = PropertyBool.create("down");
 
+  public static final AxisAlignedBB AABB = new AxisAlignedBB(0.0F, 0.0F, 0.0F, 1.0F, 0.0625F, 1.0F);
+  
   // D-U-N-S-W-E
+  @SuppressWarnings("rawtypes")
   private static final IProperty[] mapping = { DOWN, null, NORTH, SOUTH, WEST, EAST };
 
   public BlockMvesWire() {
     super(Material.circuits);
     this.setDefaultState(this.blockState.getBaseState().withProperty(NORTH, EnumAttachPosition.NONE).withProperty(EAST, EnumAttachPosition.NONE)
         .withProperty(SOUTH, EnumAttachPosition.NONE).withProperty(WEST, EnumAttachPosition.NONE).withProperty(DOWN, true));
-    this.setBlockBounds(0.0F, 0.0F, 0.0F, 1.0F, 0.0625F, 1.0F);
     setHardness(0.0F);
-    setStepSound(soundTypeStone);
+    setStepSound(SoundType.STONE);
     setUnlocalizedName("mvesWire");
     setCreativeTab(CreativeTabs.tabRedstone);
     disableStats();
     isBlockContainer = true;
   }
 
+  @Override
+  public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+      return AABB;
+  }
+
+  @SuppressWarnings("unchecked")
   public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
     TileEntity tileEntity = worldIn.getTileEntity(pos);
     WireConnections connections = tileEntity instanceof TileMvesWire ? ((TileMvesWire) tileEntity).getConnections() : WireConnections.NONE;
@@ -95,29 +113,27 @@ public class BlockMvesWire extends Block implements ITileEntityProvider {
   }
 
   public AxisAlignedBB getCollisionBoundingBox(World worldIn, BlockPos pos, IBlockState state) {
-    return null;
+    return NULL_AABB;
   }
 
-  public boolean isOpaqueCube() {
+  @Override
+  public boolean isOpaqueCube(IBlockState state)  {
     return false;
   }
 
-  public boolean isFullCube() {
+  @Override
+  public boolean isFullCube(IBlockState state) {
     return false;
   }
 
+  @Override
   public boolean canPlaceBlockAt(World worldIn, BlockPos pos) {
-    return World.doesBlockHaveSolidTopSurface(worldIn, pos.down()) || worldIn.getBlockState(pos.down()).getBlock() == Blocks.glowstone;
+    return worldIn.isSideSolid(pos.down(), EnumFacing.UP) || worldIn.getBlockState(pos.down()).getBlock() == Blocks.glowstone;
   }
 
   @SideOnly(Side.CLIENT)
-  public int colorMultiplier(IBlockAccess worldIn, BlockPos pos, int renderPass) {
-    IBlockState iblockstate = worldIn.getBlockState(pos);
-    return iblockstate.getBlock() != this ? super.colorMultiplier(worldIn, pos, renderPass) : this.calcColorMultiplier(worldIn, pos);
-  }
-
-  @SideOnly(Side.CLIENT)
-  private int calcColorMultiplier(IBlockAccess worldIn, BlockPos pos) {
+  @Override
+  public int colorMultiplier(IBlockState state, IBlockAccess worldIn, BlockPos pos, int tintIndex) {
     float c0 = Math.abs((Math.abs(pos.getX()) % 160) - 80) / 80f;
     float c1 = Math.abs((pos.getY() % 16) - 8) / 8f;
     float c2 = Math.abs((Math.abs(pos.getZ()) % 80) - 40) / 40f;
@@ -152,20 +168,24 @@ public class BlockMvesWire extends Block implements ITileEntityProvider {
   }
 
   @SideOnly(Side.CLIENT)
-  public EnumWorldBlockLayer getBlockLayer() {
-    return EnumWorldBlockLayer.CUTOUT;
+  @Override
+  public BlockRenderLayer getBlockLayer() {
+    return BlockRenderLayer.CUTOUT;
   }
 
+  @Override
   public IBlockState getStateFromMeta(int meta) {
     return getDefaultState();
   }
 
+  @Override
   public int getMetaFromState(IBlockState state) {
     return 0;
   }
 
-  protected BlockState createBlockState() {
-    return new BlockState(this, new IProperty[] { NORTH, EAST, SOUTH, WEST, DOWN });
+  @Override
+  protected BlockStateContainer createBlockState() {
+    return new BlockStateContainer(this, new IProperty[] { NORTH, EAST, SOUTH, WEST, DOWN });
   }
 
   @Override
@@ -194,11 +214,11 @@ public class BlockMvesWire extends Block implements ITileEntityProvider {
   }
 
   @Override
-  public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ) {
+  public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
     if (playerIn.capabilities.isCreativeMode) {
       TileEntity tileEntity = worldIn.getTileEntity(pos);
       WireConnections connections = tileEntity instanceof TileMvesWire ? ((TileMvesWire) tileEntity).getConnections() : null;
-      playerIn.addChatMessage(new ChatComponentText(state.toString().replace(MvesMod.MODID + ":" + BlockMvesWire.name(), "") + " " + connections
+      playerIn.addChatMessage(new TextComponentString(state.toString().replace(MvesMod.MODID + ":" + BlockMvesWire.name(), "") + " " + connections
           + (worldIn.isRemote ? " on client" : " on server")));
       return true;
     } else {
@@ -265,6 +285,7 @@ public class BlockMvesWire extends Block implements ITileEntityProvider {
   /**
    * Should be called "onAfterBlockPlaced"...
    */
+  @Override
   public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
     TileEntity tileEntity = worldIn.getTileEntity(pos);
     if (tileEntity instanceof TileMvesWire && !worldIn.isRemote) {

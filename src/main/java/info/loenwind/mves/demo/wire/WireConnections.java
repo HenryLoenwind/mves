@@ -2,7 +2,7 @@ package info.loenwind.mves.demo.wire;
 
 import info.loenwind.mves.MvesMod;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 
@@ -86,13 +86,13 @@ public class WireConnections {
       findConnection(worldIn, blockPosTarget, direction);
     }
     if (worldIn.getBlockState(blockPosAboveTarget).getBlock() == BlockMvesWire.block && worldIn.isAirBlock(blockPosAboveUs)
-        && worldIn.getBlockState(blockPosTarget).getBlock().isSideSolid(worldIn, blockPosTarget, direction.getOpposite())) {
+        && worldIn.getBlockState(blockPosTarget).getBlock().isSideSolid(worldIn.getBlockState(blockPosTarget), worldIn, blockPosTarget, direction.getOpposite())) {
       // doesn't work in some cases, see https://github.com/MinecraftForge/MinecraftForge/issues/2451
       //        && worldIn.isSideSolid(blockPosTarget, direction.getOpposite(), false)) {
       set(direction, EnumConnection.ABOVE);
     }
     if (worldIn.getBlockState(blockPosBelowTarget).getBlock() == BlockMvesWire.block && worldIn.isAirBlock(blockPosTarget)
-        && worldIn.getBlockState(blockPosBelowUs).getBlock().isSideSolid(worldIn, blockPosBelowUs, direction)) {
+        && worldIn.getBlockState(blockPosBelowUs).getBlock().isSideSolid(worldIn.getBlockState(blockPosBelowUs), worldIn, blockPosBelowUs, direction)) {
       set(direction, EnumConnection.BELOW);
     }
   }

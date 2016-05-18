@@ -4,8 +4,8 @@ import io.netty.buffer.ByteBuf;
 
 import java.io.File;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent.OnConfigChangedEvent;
@@ -74,7 +74,7 @@ public class ConfigHandler {
   @SuppressWarnings("static-method")
   @SubscribeEvent
   public void onConfigChanged(OnConfigChangedEvent event) {
-    if (event.modID.equals(modid)) {
+    if (event.getModID().equals(modid)) {
       log.info("Updating config...");
       syncConfig(false);
     }
@@ -96,7 +96,7 @@ public class ConfigHandler {
   }
 
   public void fromBytes(ByteBuf buf) {
-    if (MinecraftServer.getServer() != null && MinecraftServer.getServer().isServerRunning()) {
+    if (Minecraft.getMinecraft().isIntegratedServerRunning()) {
       return;
     }
     for (Config value : Config.values()) {
