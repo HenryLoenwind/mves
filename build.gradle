@@ -7,7 +7,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
     }
 }
 
@@ -26,7 +26,7 @@ else {
 }
 
 ext.mod_version = "2.1.0"
-ext.minecraft_version = "1.9"
+ext.minecraft_version = "1.9.4"
 version = "${minecraft_version}-${mod_version}-${buildnumber}"
 group= "info.loenwind.mves" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "mves"
