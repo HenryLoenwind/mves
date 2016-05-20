@@ -78,13 +78,13 @@ public class BlockMvesWire extends Block implements ITileEntityProvider, IBlockC
   private static final IProperty[] mapping = { DOWN, null, NORTH, SOUTH, WEST, EAST };
 
   public BlockMvesWire() {
-    super(Material.circuits);
+    super(Material.CIRCUITS);
     this.setDefaultState(this.blockState.getBaseState().withProperty(NORTH, EnumAttachPosition.NONE).withProperty(EAST, EnumAttachPosition.NONE)
         .withProperty(SOUTH, EnumAttachPosition.NONE).withProperty(WEST, EnumAttachPosition.NONE).withProperty(DOWN, true));
     setHardness(0.0F);
-    setStepSound(SoundType.STONE);
+    setSoundType(SoundType.STONE);
     setUnlocalizedName("mvesWire");
-    setCreativeTab(CreativeTabs.tabRedstone);
+    setCreativeTab(CreativeTabs.REDSTONE);
     disableStats();
     isBlockContainer = true;
   }
@@ -128,7 +128,7 @@ public class BlockMvesWire extends Block implements ITileEntityProvider, IBlockC
 
   @Override
   public boolean canPlaceBlockAt(World worldIn, BlockPos pos) {
-    return worldIn.isSideSolid(pos.down(), EnumFacing.UP) || worldIn.getBlockState(pos.down()).getBlock() == Blocks.glowstone;
+    return worldIn.isSideSolid(pos.down(), EnumFacing.UP) || worldIn.getBlockState(pos.down()).getBlock() == Blocks.GLOWSTONE;
   }
 
   @SideOnly(Side.CLIENT)
@@ -231,7 +231,7 @@ public class BlockMvesWire extends Block implements ITileEntityProvider, IBlockC
     return new TileMvesWire();
   }
 
-  /**
+/**
    * This is called on client and server, with the caller being on the server.
    * Nice way to sync data to the server without sending a whole chunk worth of
    * tile entities.
@@ -240,7 +240,7 @@ public class BlockMvesWire extends Block implements ITileEntityProvider, IBlockC
    * to the client.
    */
   @Override
-  public boolean onBlockEventReceived(World worldIn, BlockPos pos, IBlockState state, int eventID, int eventParam) {
+  public boolean eventReceived(IBlockState state, World worldIn, BlockPos pos, int eventID, int eventParam) {
     if (eventID == PARTICLES) {
       if (worldIn.isRemote) {
         spawnParticles(worldIn, pos);
@@ -259,7 +259,7 @@ public class BlockMvesWire extends Block implements ITileEntityProvider, IBlockC
    * in them!
    */
   @Override
-  public void onNeighborBlockChange(World worldIn, BlockPos pos, IBlockState state, Block neighborBlock) {
+  public void neighborChanged(IBlockState state, World worldIn, BlockPos pos, Block neighborBlock) {
     if (!worldIn.isRemote) {
       if (!canPlaceBlockAt(worldIn, pos)) {
         dropBlockAsItem(worldIn, pos, state, 0);
@@ -302,12 +302,10 @@ public class BlockMvesWire extends Block implements ITileEntityProvider, IBlockC
     for (EnumFacing direction : EnumFacing.Plane.HORIZONTAL) {
       if (connections.is(direction, EnumConnection.ABOVE)) {
         BlockPos posTarget = pos.offset(direction).up();
-        Block blockTarget = worldIn.getBlockState(posTarget).getBlock();
-        blockTarget.onNeighborBlockChange(worldIn, posTarget, worldIn.getBlockState(posTarget), this);
+        worldIn.getBlockState(posTarget).neighborChanged(worldIn, posTarget, this);
       } else if (connections.is(direction, EnumConnection.BELOW)) {
         BlockPos posTarget = pos.offset(direction).down();
-        Block blockTarget = worldIn.getBlockState(posTarget).getBlock();
-        blockTarget.onNeighborBlockChange(worldIn, posTarget, worldIn.getBlockState(posTarget), this);
+        worldIn.getBlockState(posTarget).neighborChanged(worldIn, posTarget, this);
       }
 
     }

@@ -38,10 +38,10 @@ public class CommonProxy {
 
   public void init(FMLInitializationEvent e) {
     if (Config.enableRainbowWire.getBoolean() && Config.enableRainbowWireRecipe.getBoolean()) {
-      GameRegistry.addRecipe(new ItemStack(Item.getItemFromBlock(BlockMvesWire.block)), "345", "2x6", "1x7", 'x', Items.redstone, '1', new ItemStack(Items.dye,
-          1, EnumDyeColor.RED.getDyeDamage()), '2', new ItemStack(Items.dye, 1, EnumDyeColor.ORANGE.getDyeDamage()), '3', new ItemStack(Items.dye, 1,
-          EnumDyeColor.YELLOW.getDyeDamage()), '4', new ItemStack(Items.dye, 1, EnumDyeColor.GREEN.getDyeDamage()), '5', new ItemStack(Items.dye, 1,
-          EnumDyeColor.CYAN.getDyeDamage()), '6', new ItemStack(Items.dye, 1, EnumDyeColor.BLUE.getDyeDamage()), '7', new ItemStack(Items.dye, 1,
+      GameRegistry.addRecipe(new ItemStack(Item.getItemFromBlock(BlockMvesWire.block)), "345", "2x6", "1x7", 'x', Items.REDSTONE, '1', new ItemStack(Items.DYE,
+          1, EnumDyeColor.RED.getDyeDamage()), '2', new ItemStack(Items.DYE, 1, EnumDyeColor.ORANGE.getDyeDamage()), '3', new ItemStack(Items.DYE, 1,
+          EnumDyeColor.YELLOW.getDyeDamage()), '4', new ItemStack(Items.DYE, 1, EnumDyeColor.GREEN.getDyeDamage()), '5', new ItemStack(Items.DYE, 1,
+          EnumDyeColor.CYAN.getDyeDamage()), '6', new ItemStack(Items.DYE, 1, EnumDyeColor.BLUE.getDyeDamage()), '7', new ItemStack(Items.DYE, 1,
           EnumDyeColor.PURPLE.getDyeDamage()));
     }
   }
