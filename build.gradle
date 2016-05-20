@@ -48,9 +48,9 @@ processResources {
     inputs.property "mcversion", project.minecraft.version
 
     // just throwing it here seems a bit "hacky", but hey, it works. 
-//    String contents = new File('src/main/java/info/loenwind/mves/MvesMod.java').getText('UTF-8') 
-//    contents = contents.replaceAll('VERSION = ".*"', 'VERSION = "' + project.ext.mod_version + '"')
-//    new File('src/main/java/info/loenwind/mves/MvesMod.java').write(contents, 'UTF-8')
+    String contents = new File(projectDir, 'src/main/java/info/loenwind/mves/MvesMod.java').getText('UTF-8') 
+    contents = contents.replaceAll('VERSION = ".*"', 'VERSION = "' + project.ext.mod_version + '"')
+    new File(projectDir, 'src/main/java/info/loenwind/mves/MvesMod.java').write(contents, 'UTF-8')
 
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
