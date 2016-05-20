@@ -23,7 +23,7 @@ import org.apache.logging.log4j.Logger;
 @Mod(modid = MvesMod.MODID, version = MvesMod.VERSION, name = MvesMod.MODID, guiFactory = "info.loenwind.mves.config.gui.ConfigFactory")
 public class MvesMod {
   public static final String MODID = "mves";
-  public static final String VERSION = "1.0.0";
+  public static final String VERSION = "2.1.0";
 
   @SidedProxy(clientSide = "info.loenwind.mves.proxies.ClientProxy", serverSide = "info.loenwind.mves.proxies.CommonProxy")
   public static CommonProxy PROXY;

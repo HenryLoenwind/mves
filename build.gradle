@@ -25,7 +25,7 @@ else {
     logger.lifecycle "No build number detected, setting to ${ext.buildnumber}"
 }
 
-ext.mod_version = "2.0.0"
+ext.mod_version = "2.1.0"
 ext.minecraft_version = "1.9"
 version = "${minecraft_version}-${mod_version}-${buildnumber}"
 group= "info.loenwind.mves" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
@@ -35,9 +35,9 @@ sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
 minecraft {
-    version = "1.9-12.16.1.1907"
+    version = "1.9.4-12.17.0.1909-1.9.4"
     runDir = "run"
-    mappings = "snapshot_20160312"
+    mappings = "snapshot_20160518"
 }
 
 dependencies {
@@ -48,9 +48,9 @@ processResources {
     inputs.property "mcversion", project.minecraft.version
 
     // just throwing it here seems a bit "hacky", but hey, it works. 
-//    String contents = new File('src/main/java/info/loenwind/mves/MvesMod.java').getText('UTF-8') 
-//    contents = contents.replaceAll('VERSION = ".*"', 'VERSION = "' + project.ext.mod_version + '"')
-//    new File('src/main/java/info/loenwind/mves/MvesMod.java').write(contents, 'UTF-8')
+    String contents = new File(projectDir, 'src/main/java/info/loenwind/mves/MvesMod.java').getText('UTF-8') 
+    contents = contents.replaceAll('VERSION = ".*"', 'VERSION = "' + project.ext.mod_version + '"')
+    new File(projectDir, 'src/main/java/info/loenwind/mves/MvesMod.java').write(contents, 'UTF-8')
 
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'

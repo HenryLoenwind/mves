@@ -6,7 +6,6 @@ import info.loenwind.mves.api.IEnergyOffer;
 import info.loenwind.mves.api.IEnergyTransporter;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -88,13 +87,14 @@ public class TileMvesWire extends TileEntity implements ITickable {
   }
 
   @Override
-  public void writeToNBT(NBTTagCompound compound) {
-    super.writeToNBT(compound);
+  public NBTTagCompound writeToNBT(NBTTagCompound compound) {
+    compound = super.writeToNBT(compound);
     compound.setInteger("conn", connections.getData());
+    return compound;
   }
 
   @Override
-  public Packet<?> getDescriptionPacket() {
+  public SPacketUpdateTileEntity getUpdatePacket() {
     NBTTagCompound compound = new NBTTagCompound();
     compound.setInteger("conn", connections.getData());
     return new SPacketUpdateTileEntity(getPos(), getBlockMetadata(), compound);
